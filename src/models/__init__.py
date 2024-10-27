@@ -1,8 +1,16 @@
 import configparser
 import psycopg2
 from sqlalchemy import create_engine, exc
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 from src.models.base import Base  # Importar Base desde base.py
+
+
+def read_config(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        config = configparser.ConfigParser()
+        config.read_file(f)
+    return config
+
 
 # Leer configuraciones desde el archivo database.conf
 config = configparser.ConfigParser()
@@ -39,7 +47,10 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Importar el modelo después de definir Base
+from src.models.usuarios import Usuario
 from src.models.calificacion import Calificacion
+from src.models.servicio import Servicio
+from src.models.usuario_servicio import UsuarioServicio
 
 Base.metadata.create_all(bind=engine)
 
