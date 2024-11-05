@@ -1,0 +1,47 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+    <head> 
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>Registro TRAYECTORIA</title> 
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
+    </head> 
+    <body> 
+        <div class="contenedor-form registrar">
+         <h2>Registrarse</h2> <form method="POST" action="/register">
+             {{ form.hidden_tag() }} 
+             <div class="contenedor-input"> 
+                {{ form.nombre.label }}<br> 
+                {{ form.nombre(size=32) }} 
+            </div> <div class="contenedor-input"> 
+                {{ form.apellidos.label }}<br> 
+                {{ form.apellidos(size=32) }} </div> 
+             <div class="contenedor-input"> 
+                {{ form.cedula.label }}<br> 
+                {{ form.cedula(size=32) }}
+            </div> <div class="contenedor-input"> 
+                {{ form.labor.label }}<br> 
+                {{ form.labor(size=32) }} </div>
+            <div class="contenedor-input"> 
+                {{ form.celular.label }}<br> 
+                {{ form.celular(size=32) }} </div>
+            
+            <div class="contenedor-input"> 
+                {{ form.correo.label }}<br> 
+                {{ form.correo(size=32) }} </div>
+            <div class="contenedor-input"> 
+                {{ form.password.label }}<br> 
+                {{ form.password(size=32) }} </div> 
+            <div class="contenedor-input"> 
+                {{ form.confirm_password.label }}<br> 
+                {{ form.confirm_password(size=32) }} </div> 
+            <div class="recordar"> 
+                <label for="aceptar-terminos"> 
+                    <input type="checkbox" id="aceptar-terminos"> Acepto los términos y condiciones 
+                </label> 
+            </div> 
+            <button type="submit" class="btn">{{ form.submit() }}</button>
+         </form>
+     </div> 
+</body>
+</html>

@@ -23,95 +23,47 @@
         <span class="icono-cerrar" onclick="cerrarLogin()"><i class="fa-regular fa-circle-xmark"></i></span>
         <div class="contenedor-form login">
             <h2>Iniciar sesión</h2>
+            <form method="POST" action="/">
+                {{ form.hidden_tag() }}
             
-            <form action="#">
                 <div class="contenedor-input">
                     <span class="icono"><i class="fa-solid fa-envelope"></i></span>
-                    <input type="email" id="login-email" >
+                    {{ form.email(size=32) }}
                     <label for="login-email">Email</label>
                 </div>
                 <div class="contenedor-input">
                     <span class="icono"><i class="fa-solid fa-lock"></i></span>
-                    <input type="password" id="login-password" >
+                    {{ form.password(size=32) }}
                     <label for="login-password">Password</label>
                 </div>
                 
                 <div class="recordar">
-                    <label for="recordar"><input type="checkbox" id="recordar"> Recordar sesión</label>
+                    <label for="recordar">{{ form.remember() }} Recordar sesión</label>
                     <a href="#">Forgot my password</a>
                 </div>
                 
-                <button type="button" class="btn" id="iniciar-sesion">Iniciar Sesión</button>
+                <button type="submit" class="btn" {{ form.submit() }} Iniciar sesiòn</button>
+                    <a href="{{url_for('register')}}" >Registrarseee</a>
 
-                <script>
-                    document.getElementById('iniciar-sesion').addEventListener('click', function() {
-                        window.location.href = '/editando';
-                    });
-                </script>
-                </div>
             </form>
         </div>
     </div>
-
-    <div class="contenedor-form registrar">
-        <h2>Registrarse</h2>
-        <form action="#">
-            <div class="contenedor-input">
-                <span class="icono"><i class="fa-regular fa-user"></i></span>
-                <input type="text" id="register-nombres" #>
-                <label for="register-nombres">Nombres</label>
-            </div>
-            <div class="contenedor-input">
-                <span class="icono"><i class="fa-light fa-user"></i></span>
-                <input type="text" id="register-apellidos" #>
-                <label for="register-apellidos">Apellidos</label>
-            </div>
-            <div class="contenedor-input">
-                <span class="icono"><i class="fa-solid fa-id-card"></i></span>
-                <input type="text" id="register-cedula" #>
-                <label for="register-cedula">Cédula</label>
-            </div>
-            <div class="contenedor-input">
-                <span class="icono"><i class="fa-solid fa-id-card"></i></span>
-                <input type="text" id="register-labor" >
-                <label for="register-labor" >Labor</label>
-            </div>
-            <div class="contenedor-input">
-                <span class="icono"><i class="fa-solid fa-envelope"></i></span>
-                <input type="text" id="register-correo" #>
-                <label for="register-correo">Correo</label>
-            </div>
-            <div class="contenedor-input">
-                <span class="icono"><i class="fa-solid fa-mobile-retro"></i></span>
-                <input type="text" id="register-celular" #>
-                <label for="register-celular">Número Celular</label>
-            </div>
-            <div class="contenedor-input">
-                <span class="icono"><i class="fa-solid fa-lock"></i></span>
-                <input type="password" id="register-password" #>
-                <label for="register-password">Password</label>
-            </div>
-            <div class="contenedor-input">
-                <span class="icono"><i class="fa-solid fa-lock"></i></span>
-                <input type="password" id="register-confirm-password" #>
-                <label for="register-confirm-password">Confirme Password</label>
-            </div>
-            <div class="recordar">
-                <label for="aceptar-terminos"><input type="checkbox" id="aceptar-terminos"> Acepto los términos y condiciones</label>
-            </div>
-            <button type="button" class="btn" title="dale aquí para guardar" id="save">Guardar</button>
-                <script>
-    document.getElementById('save').addEventListener('click', function() {
-        window.location.href = 'mainpage';
-    });
-</script>
+    <script>
+        function mostrarLogin() {
+            document.getElementById('loginFondo').classList.add('active');
+        }
+        function cerrarLogin() {
+            document.getElementById('loginFondo').classList.remove('active');
+        }
+    </script>
+    
             
                 
             
             
             
 
-                <p>Tienes una cuenta? <a href="#" class="login-link">Iniciar Sesión</a></p>
+                
             </div>
            
         </form>
