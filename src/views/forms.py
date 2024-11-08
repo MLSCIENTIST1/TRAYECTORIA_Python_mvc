@@ -15,5 +15,6 @@ class RegisterForm(FlaskForm):
     correo = StringField('Correo', validators=[DataRequired(), Email()])
     celular = StringField('Celular',validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    ciudad = ciudad ('Ciudad', validators=[DataRequired])
     confirm_password = PasswordField('Confirme Password', validators=[DataRequired(), EqualTo('password')]) 
     submit = SubmitField('Guardar')

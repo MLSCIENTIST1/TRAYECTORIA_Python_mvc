@@ -59,9 +59,12 @@ def create_app():
     class RegisterForm(FlaskForm):
         nombre = StringField('Nombre', validators=[DataRequired()])
         correo = StringField('Correo electrónico', validators=[DataRequired(), Email()])
-        password = PasswordField('Contraseña', validators=[DataRequired()])
+        contrasenia = PasswordField('Contrasenia', validators=[DataRequired()])
         ciudad = StringField('Ciudad', validators=[DataRequired()])
         submit = SubmitField('Registrarse')
+        labor = StringField('Labor',validators=[DataRequired()])
+        celular = StringField('Celular')
+        
 
     # Rutas
     @app.route('/')
@@ -138,11 +141,14 @@ def create_app():
                 return redirect(url_for('register'))
 
             # Crear nuevo usuario
-            hashed_password = generate_password_hash(form.password.data, method='sha256')
+            hashed_password = generate_password_hash(form.contrasenia.data, method='sha256')
             new_user = Usuario(
                 nombre=form.nombre.data,
                 correo=form.correo.data,
                 contrasenia=hashed_password,
+                labor= form.labor.data,
+                celular=form.celular.data,
+                
                 ciudad=form.ciudad.data
             )
             db.session.add(new_user)
