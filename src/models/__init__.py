@@ -2,7 +2,9 @@ import configparser
 import psycopg2
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, exc
-from src.models.base import Base
+from flask import Flask
+from src.models.database import db, init_db
+import create_app
 
 # Inicialización de SQLAlchemy
 db = SQLAlchemy()
@@ -49,8 +51,8 @@ create_database()
 DATABASE_URL = f"postgresql://{user}:{password}@{host}/{database}"
 
 # Configurar la conexión para SQLAlchemy
-def init_app(app):
-    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+def init_app(app:Flask):
+    
     db.init_app(app)
 
 # Importar modelos después de inicializar `db`

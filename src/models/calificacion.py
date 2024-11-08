@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from src.models.base import Base, db
+
+from src.models.database import db
 
 class Calificacion(db.Model):
     """Modelo de calificación para un servicio."""

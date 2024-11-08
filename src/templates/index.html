@@ -4,71 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/c4d33f5660.js" crossorigin="anonymous"></script>
-    <title>Registro TRAYECTORIA</title>
+    <title>Usuario logueado</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
 </head>
 <body>
     <header>
         <h2 class="logo">TRAYECTORIA</h2>
         <nav class="navegacion">
             <a href="#">Inicio</a>
-            <a href="#">Información</a>
-            <a href="#">Servicios</a>
-            <a href="#">Contacto</a>
-            <button class="btn" onclick="mostrarLogin()">Iniciar Sesión</button>
+            <a href="{{ url_for('login') }}">Iniciar sesion</a>
+            <a href="{{ url_for('register') }}">Registrarse</a>
+            <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">ir a zajuna</a>
+            
+            <button class="btn" onclick="mostrarLogin()">Editar perfil</button>
+            
+            
+            
         </nav>
     </header>
 
-    <div class="fondo" id="loginFondo">
-        <span class="icono-cerrar" onclick="cerrarLogin()"><i class="fa-regular fa-circle-xmark"></i></span>
-        <div class="contenedor-form login">
-            <h2>Iniciar sesión</h2>
-            <form method="POST" action="/">
-                {{ form.hidden_tag() }}
+        <div class="fondo" id="loginFondo">
+        
+           <h2></h2>
             
-                <div class="contenedor-input">
-                    <span class="icono"><i class="fa-solid fa-envelope"></i></span>
-                    {{ form.email(size=32) }}
-                    <label for="login-email">Email</label>
-                </div>
-                <div class="contenedor-input">
-                    <span class="icono"><i class="fa-solid fa-lock"></i></span>
-                    {{ form.password(size=32) }}
-                    <label for="login-password">Password</label>
-                </div>
-                
-                <div class="recordar">
-                    <label for="recordar">{{ form.remember() }} Recordar sesión</label>
-                    <a href="#">Forgot my password</a>
-                </div>
-                
-                <button type="submit" class="btn" {{ form.submit() }} Iniciar sesiòn</button>
-                    <a href="{{url_for('register')}}" >Registrarseee</a>
-
-            </form>
-        </div>
-    </div>
-    <script>
-        function mostrarLogin() {
-            document.getElementById('loginFondo').classList.add('active');
-        }
-        function cerrarLogin() {
-            document.getElementById('loginFondo').classList.remove('active');
-        }
-    </script>
-    
-            
-                
-            
-            
-            
-
-                
+            <h1>Bienvenido</h1>
+            <div></div>
+                <p> Nos agrada que hayas llegado aqui
+                    en TRAYECTORIA queremos que el mundo laboral sea mas transparente.
+                </p>
             </div>
-           
-        </form>
-    </div>
+            <h2></h2>
+        
+            
+        </div>
+    
 
+    
+        
+    </div>
     <script>
         function mostrarLogin() {
             document.getElementById('loginFondo').classList.add('active');

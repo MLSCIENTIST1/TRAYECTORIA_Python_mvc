@@ -1,47 +1,108 @@
-<!DOCTYPE html> 
-<html lang="en"> 
-    <head> 
-        <meta charset="UTF-8"> 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-        <title>Registro TRAYECTORIA</title> 
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> 
-    </head> 
-    <body> 
-        <div class="contenedor-form registrar">
-         <h2>Registrarse</h2> <form method="POST" action="/register">
-             {{ form.hidden_tag() }} 
-             <div class="contenedor-input"> 
-                {{ form.nombre.label }}<br> 
-                {{ form.nombre(size=32) }} 
-            </div> <div class="contenedor-input"> 
-                {{ form.apellidos.label }}<br> 
-                {{ form.apellidos(size=32) }} </div> 
-             <div class="contenedor-input"> 
-                {{ form.cedula.label }}<br> 
-                {{ form.cedula(size=32) }}
-            </div> <div class="contenedor-input"> 
-                {{ form.labor.label }}<br> 
-                {{ form.labor(size=32) }} </div>
-            <div class="contenedor-input"> 
-                {{ form.celular.label }}<br> 
-                {{ form.celular(size=32) }} </div>
-            
-            <div class="contenedor-input"> 
-                {{ form.correo.label }}<br> 
-                {{ form.correo(size=32) }} </div>
-            <div class="contenedor-input"> 
-                {{ form.password.label }}<br> 
-                {{ form.password(size=32) }} </div> 
-            <div class="contenedor-input"> 
-                {{ form.confirm_password.label }}<br> 
-                {{ form.confirm_password(size=32) }} </div> 
-            <div class="recordar"> 
-                <label for="aceptar-terminos"> 
-                    <input type="checkbox" id="aceptar-terminos"> Acepto los términos y condiciones 
-                </label> 
-            </div> 
-            <button type="submit" class="btn">{{ form.submit() }}</button>
-         </form>
-     </div> 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/c4d33f5660.js" crossorigin="anonymous"></script>
+    <title>Registro TRAYECTORIA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h2 class="logo">TRAYECTORIA</h2>
+        <nav class="navegacion">
+            <a href="#">Inicio</a>
+            <a href="#">Información</a>
+            <a href="#">Servicios</a>
+            <a href="#">Contacto</a>
+            <button class="btn" onclick="mostrarLogin()">Iniciar Sesión</button>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Registro de Nuevo Usuario</h1>
+        <!-- Formulario de Registro -->
+        <form method="POST" action="{{ url_for('register') }}">
+            {{ form.hidden_tag() }} <!-- Necesario para el CSRF Token -->
+
+            <!-- Nombre -->
+            <label for="nombre">Nombre:</label>
+            {{ form.nombre(class="input-field") }}
+            {% if form.nombre.errors %}
+                <ul class="error-messages">
+                    {% for error in form.nombre.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <!-- Correo -->
+            <label for="correo">Correo:</label>
+            {{ form.correo(class="input-field") }}
+            {% if form.correo.errors %}
+                <ul class="error-messages">
+                    {% for error in form.correo.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <!-- Contraseña -->
+            <label for="contrasenia">Contraseña:</label>
+            {{ form.contrasenia(class="input-field") }}
+            {% if form.contrasenia.errors %}
+                <ul class="error-messages">
+                    {% for error in form.contrasenia.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <!-- Labor -->
+            <label for="labor">Labor:</label>
+            {{ form.labor(class="input-field") }}
+            {% if form.labor.errors %}
+                <ul class="error-messages">
+                    {% for error in form.labor.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <!-- Celular -->
+            <label for="celular">Celular:</label>
+            {{ form.celular(class="input-field") }}
+            {% if form.celular.errors %}
+                <ul class="error-messages">
+                    {% for error in form.celular.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <!-- Ciudad -->
+            <label for="ciudad">Ciudad:</label>
+            {{ form.ciudad(class="input-field") }}
+            {% if form.ciudad.errors %}
+                <ul class="error-messages">
+                    {% for error in form.ciudad.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <!-- Botón de Envío -->
+            <button type="submit" class="btn-submit">Registrarse</button>
+        </form>
+    </main>
+
+    <script>
+        function mostrarLogin() {
+            document.getElementById('loginFondo').classList.add('active');
+        }
+        function cerrarLogin() {
+            document.getElementById('loginFondo').classList.remove('active');
+        }
+    </script>
 </body>
 </html>

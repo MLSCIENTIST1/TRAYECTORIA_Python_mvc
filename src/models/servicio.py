@@ -1,7 +1,9 @@
 from sqlalchemy import Column, Integer, String, Date
 from sqlalchemy.orm import relationship
-from src.models.base import Base, db
+
 from src.models.usuario_servicio import usuario_servicio
+
+from src.models.database import db
 
 class Servicio(db.Model):
     """Modelo de un servicio."""
