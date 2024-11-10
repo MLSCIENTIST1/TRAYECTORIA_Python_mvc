@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, BigInteger
 from sqlalchemy.orm import relationship
 
 from src.models.calificacion import Calificacion
@@ -18,8 +18,8 @@ class Usuario(db.Model, UserMixin):
     correo = Column(String, nullable=False)
     contrasenia = Column(String, nullable=False)
     labor = Column(String, nullable=False)
-    cedula = Column(Integer, nullable=False)
-    celular = Column(Integer, nullable=False)
+    cedula = Column(BigInteger, nullable=False)
+    celular = Column(BigInteger, nullable=False)
     ciudad = Column(String,nullable=False)
 
     # Relaciones con otras tablasa

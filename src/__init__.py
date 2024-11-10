@@ -11,6 +11,7 @@ from src.models.database import db
 from src.models.servicio import Servicio
 from src.models.usuario_servicio import usuario_servicio
 from flask_migrate import Migrate
+from sqlalchemy import or_
 
 migrate = Migrate()
 
@@ -21,8 +22,36 @@ def create_app():
 
     # Configuración de la base de datos (leer desde archivo de configuración)
     config = configparser.ConfigParser()
-    config.read('src/models/database.conf')  # Ajusta la ruta si es necesario
-    app.config['SQLALCHEMY_DATABASE_URI'] = config['database']['url']
+    config_path = r'C:\Users\carlo\Desktop\proyecto sena\TRAYECTORIA_Python_mvc\src\models\database.conf'
+
+    # Verifica la ruta del archivo de configuración
+    print(f"Ruta del archivo de configuración: {config_path}")
+
+    # Cargar el archivo de configuración
+    config.read(config_path)
+
+    # Verifica si el archivo se cargó correctamente
+    if not config.read(config_path):
+        raise ValueError(f"El archivo de configuración no se pudo leer desde la ruta: {config_path}")
+    
+    # Verifica las secciones disponibles en el archivo de configuración
+    print("Secciones encontradas en el archivo de configuración:", config.sections())
+
+    # Verifica si la sección 'database' existe
+    if 'database' not in config.sections():
+        raise ValueError("El archivo de configuración no contiene la sección 'database'. Secciones disponibles: {}".format(config.sections()))
+
+    # Depuración: Mostrar el contenido de la sección 'database'
+    print("Contenido de 'database' en config:", config['database'])
+
+    # Verifica si la clave 'url' existe en la sección 'database'
+    if 'url' not in config['database']:
+        raise ValueError("El archivo de configuración no contiene la clave 'url' dentro de la sección 'database'.")
+    
+    # Establece la URI de la base de datos
+    db_url = config['database']['url']
+    print(f"Conectando a la base de datos con la URL: {db_url}")
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
     db.init_app(app)
     migrate.init_app(app, db)
 
@@ -58,13 +87,14 @@ def create_app():
 
     class RegisterForm(FlaskForm):
         nombre = StringField('Nombre', validators=[DataRequired()])
+        apellidos = StringField('Apellido', validators=[DataRequired()])
+        cedula = StringField('Cedula', validators=[DataRequired()])
         correo = StringField('Correo electrónico', validators=[DataRequired(), Email()])
         contrasenia = PasswordField('Contrasenia', validators=[DataRequired()])
         ciudad = StringField('Ciudad', validators=[DataRequired()])
         submit = SubmitField('Registrarse')
-        labor = StringField('Labor',validators=[DataRequired()])
+        labor = StringField('Labor', validators=[DataRequired()])
         celular = StringField('Celular')
-        
 
     # Rutas
     @app.route('/')
@@ -111,24 +141,55 @@ def create_app():
 
         return render_template('login.html', form=form)
 
-    @app.route('/editando', methods= ['GET','POST'])
+    @app.route('/resultado_filtro_primera_busqueda', methods=['GET', 'POST'])
     @login_required
-    def editando():
+    def resultado_filtro_primera_busqueda():
+        
         print("Depuración - Página de edición accedida")
+    
         ciudad = request.args.get('ciudad')
         labor = request.args.get('labor')
         
-        # Filtrar los servicios según los parámetros recibidos
-        if ciudad and labor:
-            servicios_filtrados = Servicio.query.filter(Servicio.ciudad == ciudad, Servicio.labor == labor).all()
-        elif ciudad:
-            servicios_filtrados = Servicio.query.filter(Servicio.ciudad == ciudad).all()
-        elif labor:
-            servicios_filtrados = Servicio.query.filter(Servicio.labor == labor).all()
-        else:
-            servicios_filtrados = Servicio.query.all()  # Si no se proporciona filtro, mostrar todos los servicios
+        print(f"Depuración - Ciudad: {ciudad}")
+        print(f"Depuración - Labor: {labor}")
+        
+        query = Usuario.query
+        
+        # Creamos las condiciones de filtro
+        condiciones = []
+        
+        # Filtrar por ciudad
+        if ciudad:
+            condiciones.append(Usuario.ciudad == ciudad)
+            print(f"Depuración - Filtro aplicado para ciudad: {ciudad}")
 
-        return render_template('editando.html', servicios=servicios_filtrados)
+        # Filtrar por labor
+        if labor:
+            condiciones.append(Usuario.labor.ilike(f"%{labor}%"))  # Usamos ilike para insensibilidad a mayúsculas
+            print(f"Depuración - Filtro aplicado para labor: {labor}")
+
+        # Si hay condiciones, usamos or_() para aplicarlas
+        if condiciones:
+            query = query.filter(or_(*condiciones))
+        
+        # Ejecutar la consulta
+        resultados = query.all()
+
+        # Mostrar los resultados
+        if resultados:
+            print(f"Depuración - Se encontraron {len(resultados)} resultados.")
+        else:
+            print("Depuración - No se encontraron resultados.")
+
+        return render_template('resultado_filtro_primera_busqueda.html', resultados=resultados)
+    
+    @app.route('/detalle_resultado_busqueda/<int:user_id>')
+    @login_required
+    def detalle_resultado_busqueda(user_id):
+        usuario = Usuario.query.get(user_id)
+        return render_template('detalle_resultado_busqueda.html', usuario = usuario)
+
+        
 
     @app.route('/register', methods=['GET', 'POST'])
     def register():
@@ -141,14 +202,15 @@ def create_app():
                 return redirect(url_for('register'))
 
             # Crear nuevo usuario
-            hashed_password = generate_password_hash(form.contrasenia.data, method='sha256')
+            hashed_password = generate_password_hash(form.contrasenia.data, method='pbkdf2:sha256')
             new_user = Usuario(
                 nombre=form.nombre.data,
+                apellidos=form.apellidos.data,
+                cedula=form.cedula.data,
                 correo=form.correo.data,
                 contrasenia=hashed_password,
-                labor= form.labor.data,
+                labor=form.labor.data,
                 celular=form.celular.data,
-                
                 ciudad=form.ciudad.data
             )
             db.session.add(new_user)
@@ -162,38 +224,35 @@ def create_app():
     @app.route('/logout')
     def logout():
         logout_user()
-        flash('La sesión se ha cerrado exitosamente', 'info')
+        flash('La sesión se ha cerrado exitosamente','info')
         return redirect(url_for('index'))
-
-    @app.route('/filter_services', methods=['GET'])
     
-    @app.route('/filter_services', methods=['GET'])
-    def filter_services():
+    @app.route('/editando', methods=['GET', 'POST'])
+    @login_required
+    def editando():
+            return render_template('editando.html')
+    
+    
+    """@app.route('/resultados', methods=['GET'])
+    def resultados():
         ciudad = request.args.get('ciudad')  # Recibe el valor de ciudad desde la URL
         labor = request.args.get('labor')    # Recibe el valor de labor desde la URL
-
+        #se hace solo la consulta en el modelo usuario
+        query = Usuario.query
         # Filtrar servicios por ciudad y/o labor, considerando la relación muchos a muchos
-        if ciudad and labor:
-            # Filtramos por la ciudad del Usuario y la labor del Servicio
-            servicios_filtrados = Servicio.query \
-                .join(usuario_servicio) \
-                .join(Usuario) \
-                .filter(Usuario.ciudad == ciudad, Servicio.nombre_servicio == labor).all()
-        elif ciudad:
-            # Filtramos solo por la ciudad del Usuario
-            servicios_filtrados = Servicio.query \
-                .join(usuario_servicio) \
-                .join(Usuario) \
-                .filter(Usuario.ciudad == ciudad).all()
-        elif labor:
-            # Filtramos solo por la labor del Servicio
-            servicios_filtrados = Servicio.query \
-                .filter(Servicio.nombre_servicio == labor).all()
-        else:
-            # Si no hay filtros, mostramos todos los servicios
-            servicios_filtrados = Servicio.query.all()
+        if ciudad :
+            query = query.filter(Usuario.ciudad == ciudad)
+            print("Se encontro un resultado para: {ciudad}")
+
+        if labor : 
+            query = query.filter(Usuario.labor.like(f"%{labor}%"))
+            print("Se encontro un resultado para: {ciudad}")
+        
+        resultados = query.all()
 
         # Pasamos los servicios filtrados a la plantilla
-        return render_template('filter_services.html', servicios=servicios_filtrados)
+        return render_template('resultado_filtro_primera_busqueda.html', resultados=resultados)"""
+    
+    
 
-    return app  # Devuelve la aplicación creada
+    return app  # Devuelve la aplicación creada 

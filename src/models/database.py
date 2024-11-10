@@ -9,7 +9,7 @@ db = SQLAlchemy()
 
 def init_db(app):
     # Configura la base de datos en la aplicación Flask
-    db.init_app(app)
+    migrate.init_app(app, db)
 
     # Si deseas crear todas las tablas en la base de datos (si no existen)
     with app.app_context():

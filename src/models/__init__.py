@@ -3,7 +3,7 @@ import psycopg2
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, exc
 from flask import Flask
-from src.models.database import db, init_db
+from src.models.database import db
 import create_app
 
 # Inicialización de SQLAlchemy

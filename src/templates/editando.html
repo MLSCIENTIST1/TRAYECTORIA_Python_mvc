@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/c4d33f5660.js" crossorigin="anonymous"></script>
-    <title>Usuario logueado</title>
+    <title>Busqueda labor</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -25,7 +25,7 @@
             <h2>Contratar un servicio</h2>
             
             <!-- Formulario de filtro -->
-            <form method="GET" action="{{ url_for('filter_services') }}">
+            <form method="GET" action="{{ url_for('resultado_filtro_primera_busqueda') }}">
                 <div class="contenedor-input">
                     <span class="icono"><i class="fa-solid fa-city"></i></span>
                     <label for="ciudad">Selecciona una Ciudad</label>
@@ -33,6 +33,7 @@
                         <option value="Bogotá">Bogotá</option>
                         <option value="Medellín">Medellín</option>
                         <option value="Cali">Cali</option>
+                        <option value="Cali">Desconocido</option>
                     </select>
                 </div>
                 

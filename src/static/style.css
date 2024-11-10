@@ -86,7 +86,24 @@ header {
 .fondo {
     position: relative;
     width: 400px;
-    height: 440px;
+    height: 800px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    backdrop-filter: blur(25px); 
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    transition: transform 0.5s ease, height 0.2s ease;
+    transform: scale(1);
+    left: -2%;
+}
+
+.fondo_2 {
+    position: relative;
+    width: 400px;
+    height: 450px;
     background: transparent;
     border: 2px solid rgba(255, 255, 255, 0.5);
     border-radius: 20px;
@@ -128,18 +145,19 @@ header {
 /* Corregido */
 .fondo .contenedor-form.registrar {
     position: relative;
-    width: 400px;
-    height: 440px;
-    background: transparent;
+    width: 90%;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 255, 255, 0.5);
     border-radius: 20px;
     backdrop-filter: blur(25px); 
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
     display: flex;
-    justify-content: center;
-    
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px; /* Añade espacio entre los elementos */
     transition: transform 0.5s ease, height 0.2s ease;
-    transform: scale(0);
+    transform: scale(1);
     left: 8%;
 }
 

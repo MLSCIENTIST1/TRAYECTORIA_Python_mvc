@@ -10,34 +10,85 @@
 <body>
     <header>
         <h2 class="logo">TRAYECTORIA</h2>
+        
         <nav class="navegacion">
-            <a href="#">Inicio</a>
+            <a href="{{url_for("index")}}">Inicio</a>
             <a href="#">Información</a>
             <a href="#">Servicios</a>
             <a href="#">Contacto</a>
             <button class="btn" onclick="mostrarLogin()">Iniciar Sesión</button>
         </nav>
     </header>
-
-    <main>
-        <h1>Registro de Nuevo Usuario</h1>
+    <div >
+        
+    
+        <p>   ...</p>
+    </div>
+    
+    <div class="fondo  " id="loginFondo">
+        
+        
+        
+        <p class="contenedor-login">
+            <h4>Terminos y condiciones. </h4>
+            <p>Al usar la aplicación Trayectoria, el usuario acepta que puede recibir reportes negativos y, en algunos casos, críticas fuertes en relación con su desempeño en distintos roles, tales como empleado, prestador de servicios independiente, contratante, dueño de negocio, servidor público, entre otros que puedan ser registrados en la plataforma. Estas evaluaciones buscan promover el crecimiento y la mejora continua en su labor profesional. Asimismo, el usuario acepta que, si decide eliminar su registro en Trayectoria, sus datos permanecerán visibles durante un periodo de 6 meses posteriores a la solicitud de baja, permitiendo una transición adecuada de la información en la plataforma.
+            </p>
+        
+        </p>
+        
+    
+        
+    </div>
+    <main >
+        
+        <div class="fondo " id="loginFondo">
+            <span>
         <!-- Formulario de Registro -->
-        <form method="POST" action="{{ url_for('register') }}">
+     <div class="contenedor-form.registrar ">
+        <form method="POST" action="{{ url_for('register') }}"><br>
+            <h3>Registro de Nuevo Usuario  </h3>
             {{ form.hidden_tag() }} <!-- Necesario para el CSRF Token -->
-
+            <div class="contenedor-input "></div>
             <!-- Nombre -->
-            <label for="nombre">Nombre:</label>
+            <label for="nombre" >Nombre: </label>
             {{ form.nombre(class="input-field") }}
             {% if form.nombre.errors %}
                 <ul class="error-messages">
                     {% for error in form.nombre.errors %}
                         <li>{{ error }}</li>
                     {% endfor %}
+                </ul><br>
+            {% endif %}
+        
+        </span>
+        <div class="contenedor-input "></div>
+            <!-- Apellidos -->
+            <label for="Apellidos" >Apellidos:</label>
+            {{ form.apellidos(class="input-field") }}
+            {% if form.apellidos.errors %}
+                <ul class="error-messages">
+                    {% for error in form.apellidos.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            
+
+            <div class="contenedor-input "></div>
+            <!-- Cedula -->
+            <label for="Cedula" class=" contenedor-input">cedula:</label>
+            {{ form.cedula(class="input-field") }}
+            {% if form.cedula.errors %}
+                <ul class="error-messages">
+                    {% for error in form.cedula.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
                 </ul>
             {% endif %}
 
+            <div class="contenedor-input "></div>
             <!-- Correo -->
-            <label for="correo">Correo:</label>
+            <label for="correo"class=" contenedor-input">Correo:</label>
             {{ form.correo(class="input-field") }}
             {% if form.correo.errors %}
                 <ul class="error-messages">
@@ -46,9 +97,9 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-
+            <div class="contenedor-input "></div>
             <!-- Contraseña -->
-            <label for="password">Contraseña:</label>
+            <label for="contrasenia"class=" contenedor-input">Contraseña:</label>
             {{ form.contrasenia(class="input-field") }}
             {% if form.contrasenia.errors %}
                 <ul class="error-messages">
@@ -58,8 +109,10 @@
                 </ul>
             {% endif %}
 
+            <div class="contenedor-input "></div>
+
             <!-- Labor -->
-            <label for="labor">Labor:</label>
+            <label for="labor"class=" contenedor-input">Labor:</label>
             {{ form.labor(class="input-field") }}
             {% if form.labor.errors %}
                 <ul class="error-messages">
@@ -69,8 +122,10 @@
                 </ul>
             {% endif %}
 
+            <div class="contenedor-input "></div>
+
             <!-- Celular -->
-            <label for="celular">Celular:</label>
+            <label for="celular"class=" contenedor-input">Celular:</label>
             {{ form.celular(class="input-field") }}
             {% if form.celular.errors %}
                 <ul class="error-messages">
@@ -79,6 +134,8 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+
+            <div class="contenedor-input "></div>
 
             <!-- Ciudad -->
             <label for="ciudad">Ciudad:</label>
@@ -90,10 +147,12 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-
+            <div class="contenedor-form login"></div>
             <!-- Botón de Envío -->
-            <button type="submit" class="btn-submit">Registrarse</button>
+            <button type="submit" class="registrar btn ">Registrarse</button>
         </form>
+    </div>
+        
     </main>
 
     <script>
