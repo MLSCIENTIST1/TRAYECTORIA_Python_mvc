@@ -4,17 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/c4d33f5660.js" crossorigin="anonymous"></script>
-    <title>Iniciar sesión(loguin)</title>
+    <title>Iniciar sesión (Login)</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <header>
         <h2 class="logo">TRAYECTORIA</h2>
         <nav class="navegacion">
-            <a href="#">Inicio</a>
+            <a href="{{ url_for('main.index') }}">Inicio</a>
             <a href="#">Feedbacks</a>
             <a href="#">Calificaciones Recibidas</a>
-            
             <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">Ir a Zajuna</a>
             <button class="btn" onclick="mostrarLogin()">Editar perfil</button>
         </nav>
@@ -25,13 +24,28 @@
         <span class="icono-cerrar" onclick="cerrarLogin()"><i class="fa-regular fa-circle-xmark"></i></span>
         <div class="contenedor-form login">
             <h2>Loguearse</h2>
-            <!-- Aquí se envía el formulario al backend con el método POST -->
-            <form method="POST" action="{{ url_for('login') }}">
+
+            <!-- Formulario de login -->
+            <form method="POST" action="{{ url_for('auth.login') }}">
                 {{ form.hidden_tag() }} <!-- CSRF token -->
+
+                <!-- Mostrar errores de validación -->
+                {% if form.errors %}
+                    <div class="errores">
+                        {% for field, errors in form.errors.items() %}
+                            <div class="error">
+                                <strong>{{ field.label }}:</strong>
+                                {% for error in errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
                 <div class="contenedor-input">
                     <span class="icono"><i class="fa-solid fa-city"></i></span>
-                    {{ form.email(class="input-field", id="login-email") }}
+                    {{ form.correo(class="input-field", id="login-email") }}
                     <label for="login-email">Escribe tu correo</label>
                 </div>
 
@@ -42,42 +56,15 @@
                 </div>
 
                 <div class="recordar">
-                    {{ form.remember() }} <label for="recordar"> Recordar sesión</label>
+                    {{ form.remember() }} <label for="recordar">Recordar sesión</label>
                 </div>
 
                 <button type="submit" class="btn">Iniciar sesión</button>
-                
-                
             </form>
-
-            <!-- Depuración: Mostrar los datos enviados (esto es temporal para depurar) -->
-            <div>
-                <h3>Datos enviados:</h3>
-                <p>Email: {{ form.email.data }}</p>
-                <p>Password: {{ form.password.data }}</p>
-            </div>
         </div>
     </div>
 
     <script>
-        // Agregar un evento 'submit' para depurar el formulario antes de enviarlo
-        document.querySelector('form').addEventListener('submit', function(event) {
-            // Prevenir el envío real del formulario para inspeccionar los datos
-            event.preventDefault();
-
-            // Obtener los valores del formulario
-            var email = document.querySelector('#login-email').value;
-            var password = document.querySelector('#login-password').value;
-
-            // Mostrar los valores en la consola del navegador
-            console.log("Formulario enviado:");
-            console.log("Email:", email);
-            console.log("Password:", password);
-
-            // Ahora enviar el formulario manualmente
-            this.submit();
-        });
-
         function mostrarLogin() {
             document.getElementById('loginFondo').classList.add('active');
         }

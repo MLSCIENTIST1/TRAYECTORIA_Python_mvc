@@ -12,7 +12,7 @@
     <header>
         <h2 class="logo">TRAYECTORIA</h2>
         <nav class="navegacion">
-            <a href="{{ url_for('index') }}">Inicio</a>
+            <a href="{{ url_for('main.index') }}">Inicio</a>
             <a href="#">Feedbacks</a>
             <a href="#">Calificaciones Recibidas</a>
             <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">ir a zajuna</a>
@@ -27,33 +27,18 @@
     <div class="fondo" id="loginFondo">
         <span class="icono-cerrar" onclick="cerrarLogin()"><i class="fa-regular fa-circle-xmark"></i></span>
         <div class="contenedor-form login">
-            <h2>Contratar un servicio</h2>
-                    
-                <div class="contenedor-input">
-                    <h2>Detalles del Usuario</h2>
-                    <!-- Mostrar detalles del usuario -->
-                    <p><strong>Nombre:</strong> {{ usuario.nombre }} {{ usuario.apellidos }}</p>
-                    <p><strong>Cédula:</strong> {{ usuario.cedula }}</p>
-                    <p><strong>Correo:</strong> {{ usuario.correo }}</p>
-                    <p><strong>Labor:</strong> {{ usuario.labor }}</p>
-                    <p><strong>Ciudad:</strong> {{ usuario.ciudad }}</p>
-                    <p><strong>Celular:</strong> {{ usuario.celular }}</p>
-            
-                    <!-- Volver a los resultados -->
-                    <a href="{{ url_for('resultado_filtro_primera_busqueda') }}" class= "btn">Volver a los resultados</a>
-                </div>
-                
-                <button type="submit" class="btn">Enviar solicitud de contratacion</button>
-                <div class="registrar">
-                    <p>la calificaciòn solo està habilitada cuando este usuario haya aceptado tu solicitud de servicio.    <a href="#" class="registrar-link">ir a calificar</a></p>
-                </div>
-            
-        </div>
-    </div>
-    
-
-   
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              <ul class="flashes">
+                {% for category, message in messages %}
+                  <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          {% endwith %}  
         
+        </div>
+            
     </div>
     <div>
         

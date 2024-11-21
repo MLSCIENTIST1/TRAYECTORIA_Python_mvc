@@ -12,9 +12,13 @@
     <header>
         <h2 class="logo">TRAYECTORIA</h2>
         <nav class="navegacion">
-            <a href="#">Inicio</a>
-            <a href="{{ url_for('login') }}">Iniciar sesion</a>
-            <a href="{{ url_for('register') }}">Registrarse</a>
+            
+            <a href="{{ url_for('recive.show_notifications') }}">Notificaciones</a>
+            <a href="#">Mi dashboard</a>
+            <a href="{{url_for('profile.editando')}}">Buscar Candidatos</a>
+            <a href="{{ url_for('main.logout') }}">Cerrar sesión</a>
+            
+            
             <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">ir a zajuna</a>
             
             <button class="btn" onclick="mostrarLogin()">Editar perfil</button>
@@ -28,11 +32,9 @@
         
            <h2></h2>
             
-            <h1>Bienvenido</h1>
+            <h1></h1>
             <div></div>
-                <p> Nos agrada que hayas llegado aqui
-                    en TRAYECTORIA queremos que el mundo laboral sea mas transparente.
-                </p>
+                <h2> Proximamente aquì encontraras videos de casos de exito, no te lo pierdas </h2>
             </div>
             <h2></h2>
         

@@ -13,20 +13,19 @@ class Calificacion(db.Model):
     puntaje_global = Column(Integer, nullable=False)
     comentario = Column(String, nullable=True)
 
-    # Relaciones
-    id_servicio = Column(Integer, ForeignKey('servicio.id_servicio'))
-    servicio = relationship("Servicio", back_populates="calificaciones")
+    calificaciones = relationship("Calificacion", back_populates="usuario")  # Relación con Calificacion
+    servicios = relationship("Servicio", secondary="usuario_servicio", back_populates="usuarios")  # Relación con Servicio
 
-    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario'))
-    usuario = relationship("Usuario", back_populates="calificaciones")
-
-    def __init__(self, puntaje_por_labor, puntaje_global, comentario, id_servicio, id_usuario):
-        """Constructor de la clase Calificacion."""
-        self.puntaje_por_labor = puntaje_por_labor
-        self.puntaje_global = puntaje_global
-        self.comentario = comentario
-        self.id_servicio = id_servicio
-        self.id_usuario = id_usuario
+    
+    def __init__(self, nombre, apellidos, correo, contrasenia, labor, cedula, celular, ciudad):
+        self.nombre = nombre
+        self.apellidos = apellidos
+        self.correo = correo
+        self.set_password(contrasenia)  # Usar el método set_password para almacenar el hash
+        self.labor = labor
+        self.cedula = cedula
+        self.celular = celular
+        self.ciudad = ciudad
 
     def actualizar(self, puntaje_por_labor=None, puntaje_global=None, comentario=None):
         """Actualiza los atributos de una calificación."""

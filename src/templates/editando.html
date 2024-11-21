@@ -11,10 +11,11 @@
     <header>
         <h2 class="logo">TRAYECTORIA</h2>
         <nav class="navegacion">
-            <a href="#">Inicio</a>
+            <a href="{{ url_for('main.index') }}">Inicio</a>
             <a href="#">Feedbacks</a>
+            <a href="#">Notificaciones</a>
             <a href="#">Calificaciones Recibidas</a>
-            <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+            <a href="{{ url_for('main.index') }}">Cerrar sesión</a>
             <button class="btn" onclick="mostrarLogin()">Editar perfil</button>
         </nav>
     </header>
@@ -25,7 +26,7 @@
             <h2>Contratar un servicio</h2>
             
             <!-- Formulario de filtro -->
-            <form method="GET" action="{{ url_for('resultado_filtro_primera_busqueda') }}">
+            <form method="GET" action="{{ url_for('search.resultado_filtro_primera_busqueda') }}">
                 <div class="contenedor-input">
                     <span class="icono"><i class="fa-solid fa-city"></i></span>
                     <label for="ciudad">Selecciona una Ciudad</label>

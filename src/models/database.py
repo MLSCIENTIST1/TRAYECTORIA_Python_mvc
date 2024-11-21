@@ -1,16 +1,58 @@
 from flask_sqlalchemy import SQLAlchemy
-
 from flask_migrate import Migrate
+import psycopg2
+import configparser
+import sys
 
-migrate = Migrate
-
-# Crear una instancia de SQLAlchemy
+# Crear instancias globales
 db = SQLAlchemy()
+migrate = Migrate()
 
-def init_db(app):
-    # Configura la base de datos en la aplicación Flask
+# Función para leer la configuración
+def read_config(file_path):
+    config = configparser.ConfigParser()
+    config.read(file_path, encoding='utf-8')
+    return config
+
+# Leer las configuraciones desde el archivo `database.conf`
+config = read_config(r'C:\Users\carlo\Desktop\proyecto sena\TRAYECTORIA_Python_mvc\src\models\database.conf')
+host = config['database']['host']
+user = config['database']['user']
+password = config['database']['password']
+database = config['database']['database']
+
+# URL de la base de datos
+DATABASE_URL = f"postgresql://{user}:{password}@{host}/{database}"
+
+# Crear la base de datos si no existe
+def create_database():
+    print("Conectando a la base de datos postgres...")
+    try:
+        conn = psycopg2.connect(
+            dbname='postgres',
+            user=user,
+            password=password,
+            host=host,
+            options='-c client_encoding=UTF8'
+        )
+        conn.autocommit = True
+        cur = conn.cursor()
+        cur.execute("SELECT 1 FROM pg_database WHERE datname = %s", [database])
+        if not cur.fetchone():
+            cur.execute(f"CREATE DATABASE {database}")
+            print(f"Base de datos '{database}' creada.")
+        else:
+            print(f"La base de datos '{database}' ya existe.")
+    except Exception as e:
+        print(f"Error al crear la base de datos: {e}", file=sys.stderr)
+    finally:
+        cur.close()
+        conn.close()
+
+# Inicializar la aplicación
+def init_app(app):
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
     migrate.init_app(app, db)
-
-    # Si deseas crear todas las tablas en la base de datos (si no existen)
-    with app.app_context():
-        db.create_all()
+    print("Base de datos y migraciones inicializadas correctamente")

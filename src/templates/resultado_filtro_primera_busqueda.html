@@ -12,10 +12,11 @@
     <header>
         <h2 class="logo">TRAYECTORIA</h2>
         <nav class="navegacion">
-            <a href="#">Inicio</a>
+            <a href="{{ url_for('main.index') }}">inicio</a>
             <a href="#">Feedbacks</a>
+            <a href="#">Notificaciones</a>
             <a href="#">Calificaciones Recibidas</a>
-            <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">ir a zajuna</a>
+            <a href="{{ url_for('main.logout') }}">Cerrar sesión</a>
             
             <button class="btn" onclick="mostrarLogin()">Editar perfil</button>
             
@@ -24,26 +25,29 @@
         </nav>
     </header>
 
-    <div class="fondo" id="loginFondo">
-        <span class="icono-cerrar" onclick="cerrarLogin()"><i class="fa-regular fa-circle-xmark"></i></span>
-        <div class="contenedor-form login">
-            <h2>Resultado de busqueda</h2>
-            <!-- Mostrar los resultados de la búsqueda -->
-            {% if resultados %}
-    <ul>
-        {% for usuario in resultados %}
-            <li>
-                <a href="{{url_for ('detalle_resultado_busqueda', user_id=usuario.id_usuario)}}">
-                <strong>Labor:</strong> {{ usuario.labor }}<br>
-                <strong>Ciudad:</strong> {{ usuario.ciudad }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No se encontraron resultados.</p>
-{% endif %}
-        </div>
+    <div class="contenedor-form login">
+        <h2>Resultado de Búsqueda</h2>
+        
+        <!-- Mostrar los resultados de la búsqueda -->
+        {% if resultados %}
+            <ul>
+                {% for usuario in resultados %}
+                    <li>
+                        <a href="{{ url_for('search.detalle_candidato', id_usuario=usuario.id_usuario) }}">
+                            <strong>Nombre:</strong> {{usuario.nombre}} <br>
+                            <strong>Apellidos</strong>{{usuario.apellidos}} <br>
+                            <strong>Correo</strong>{{usuario.correo}} <br>
+                            <strong>Labor:</strong> {{ usuario.labor }}<br>
+                            <strong>Ciudad:</strong> {{ usuario.ciudad }} <br>
+                            
+                            
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No se encontraron resultados.</p>
+        {% endif %}
     </div>
             
     </div>

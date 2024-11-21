@@ -12,7 +12,7 @@
         <h2 class="logo">TRAYECTORIA</h2>
         
         <nav class="navegacion">
-            <a href="{{url_for("index")}}">Inicio</a>
+            <a href="{{url_for("main.index")}}">Inicio</a>
             <a href="#">Información</a>
             <a href="#">Servicios</a>
             <a href="#">Contacto</a>
@@ -45,7 +45,7 @@
             <span>
         <!-- Formulario de Registro -->
      <div class="contenedor-form.registrar ">
-        <form method="POST" action="{{ url_for('register') }}"><br>
+        <form method="POST" action="{{ url_for('register.register') }}"><br>
             <h3>Registro de Nuevo Usuario  </h3>
             {{ form.hidden_tag() }} <!-- Necesario para el CSRF Token -->
             <div class="contenedor-input "></div>
