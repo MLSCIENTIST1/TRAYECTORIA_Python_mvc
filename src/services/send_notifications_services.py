@@ -1,18 +1,41 @@
+import logging
+from src.models.notification import Notification
+from src.models import db
+from src.models.usuarios import Usuario  # Importar Usuario para validar que existe
+
+# Configurar el logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def send_contract_request_notification(user_id, message):
     try:
-        # Importa Notification solo cuando sea necesario
-        from src.models.notification import Notification  # Importación diferida
-        from src.models import db
+        # Verificar los valores antes de proceder
+        logger.debug(f"Verificando valores - user_id: {user_id}, message: {message}")
+
+        # Verificar si el usuario existe
+        usuario = Usuario.query.get(user_id)  # Verificar si el usuario con el id dado existe
+        if not usuario:
+            logger.error(f"Usuario con id {user_id} no encontrado.")
+            raise ValueError(f"Usuario con id {user_id} no encontrado.")
         
+        logger.info(f"Usuario encontrado: {usuario.nombre}")  # Confirmar que encontramos al usuario
+
         # Crear la notificación
         notification = Notification(user_id=user_id, message=message)
+        logger.debug(f"Creando notificación para el usuario {user_id} con mensaje: {message}")
         
         # Agregar la notificación a la sesión de la base de datos
         db.session.add(notification)
+        db.session.flush()  # Enviar a la base de datos sin confirmar aún
         db.session.commit()  # Confirmar la transacción
 
-        print(f"Notificación enviada a usuario {user_id}: {message}")
+        # Recuperar la notificación de la base de datos para verificar que se guardó correctamente
+        notification_in_db = Notification.query.filter_by(user_id=user_id).order_by(Notification.timestamp.desc()).first()
+        logger.info(f"Notificación guardada: {notification_in_db}")
+
+        logger.info(f"Notificación enviada a usuario {user_id}: {message}")
+    
     except Exception as e:
-        print(f"Error al enviar notificación: {e}")
-        db.session.rollback()  # En caso de error, deshacer la tra
+        # Registrar el error completo con traceback
+        logger.error(f"Error al enviar notificación: {e}", exc_info=True)
+        db.session.rollback()  # Deshacer cualquier cambio si hubo un error

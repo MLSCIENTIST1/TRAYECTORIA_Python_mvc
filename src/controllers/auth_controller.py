@@ -11,11 +11,12 @@ auth_bp = Blueprint('auth', __name__)
 def login():
     # Si el usuario ya está autenticado, redirigirlo a la página principal
     if current_user.is_authenticated:
-        print("Usuario ya está logueado, redirigiendo a la página principal.")
+        print(f"Usuario ya está logueado, redirigiendo a la página principal.{current_user.nombre}")
         return redirect(url_for('loged.principal_usuario_logueado'))
-
-    # Usar Flask-WTF Formulario para manejar el login
-    form = LoginForm()
+    else:
+        print("El usuario no está autenticado.")
+        # Usar Flask-WTF Formulario para manejar el login
+        form = LoginForm()
 
     if form.validate_on_submit():  # Si la validación del formulario es exitosa
         correo = form.correo.data  # Obtener el email del formulario

@@ -22,6 +22,7 @@ class Usuario(db.Model, UserMixin):
 
     # Relación con servicios
     servicios = relationship("Servicio", secondary=usuario_servicio, back_populates="usuarios")
+    notifications = relationship("Notification", backref="usuario", lazy=True)
 
     def __init__(self, nombre, apellidos, correo, contrasenia, labor, cedula, celular, ciudad):
         self.nombre = nombre

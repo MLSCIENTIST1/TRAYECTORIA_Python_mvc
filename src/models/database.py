@@ -24,6 +24,13 @@ database = config['database']['database']
 # URL de la base de datos
 DATABASE_URL = f"postgresql://{user}:{password}@{host}/{database}"
 
+# Probar conexión a la base de datos
+try:
+    engine = psycopg2.connect(DATABASE_URL)
+    print("Conexión exitosa a la base de datos")
+except Exception as e:
+    print(f"Error al conectar a la base de datos: {e}")
+
 # Crear la base de datos si no existe
 def create_database():
     print("Conectando a la base de datos postgres...")
