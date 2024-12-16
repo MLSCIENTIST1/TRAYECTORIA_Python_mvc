@@ -66,3 +66,7 @@ class Usuario(db.Model, UserMixin):
         if usuario:
             session.delete(usuario)
             session.commit()
+
+    def get_id(self):
+        """Especifica que el ID del usuario es `id_usuario`."""
+        return str(self.id_usuario) 

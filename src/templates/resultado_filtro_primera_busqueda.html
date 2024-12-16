@@ -18,7 +18,8 @@
             <a href="#">Calificaciones Recibidas</a>
             <a href="{{ url_for('main.logout') }}">Cerrar sesión</a>
             
-            <button class="btn" onclick="mostrarLogin()">Editar perfil</button>
+            <button class="btn" onclick="window.location.href='{{ url_for('profile.edit_profile') }}'">Editar perfil</button>
+
             
             
             

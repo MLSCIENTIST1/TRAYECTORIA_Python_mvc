@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/c4d33f5660.js" crossorigin="anonymous"></script>
+    <title>Notificaciones</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <header>
+        <h2 class="logo">TRAYECTORIA</h2>
+        <nav class="navegacion">
+            <a href="{{ url_for('main.index') }}">Inicio</a>
+            <a href="#">Feedbacks</a>
+            <a href="#">Calificaciones Recibidas</a>
+            <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">Ir a Zajuna</a>
+            <button class="btn" onclick="window.location.href='{{ url_for('profile.edit_profile') }}'">Editar perfil</button>
+        </nav>
+    </header>
+
+    <div class="contenedor-form registrar">
+        <h2>Notificaciones</h2><br>
+        
+        <!-- Añadir esta sección para mostrar mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        
+        <ul>
+            {% for notification in notifications %}
+            <li class="{% if not notification.is_read %}unread{% endif %}">
+                <p>{{ notification.message }} - {{ notification.timestamp }}</p>
+                {% if notification.request_id %}
+                <p><strong>Solicitud ID:</strong> {{ notification.request_id }}</p>
+                {% endif %}
+                
+                <!-- Botones de acción -->
+                <div class="acciones">
+                    <!-- Botón para aceptar -->
+                    <form method="POST" action="{{ url_for('recive.accept_notification', notification_id=notification.id) }}" onsubmit="return confirmAction('{{ notification.id }}')">
+                        <button type="submit" class="btn aceptar">Aceptar</button>
+                    </form>
+
+                    <!-- Botón para rechazar -->
+                    <form method="POST" action="{{ url_for('recive.reject_notification', notification_id=notification.id) }}">
+                        <button type="submit" class="btn rechazar">Rechazar</button>
+                    </form>
+
+                    <!-- Formulario para solicitar más detalles -->
+                    <form method="POST" action="{{ url_for('recive.more_details', notification_id=notification.id) }}">
+                        <textarea name="question" placeholder="Escribe tu pregunta aquí..." required></textarea>
+                        <button type="submit" class="btn detalles">Solicitar Más Detalles</button>
+                    </form>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        function confirmAction(notificationId) {
+            const confirmed = confirm('Haz aceptado la solicitud de contratación con ID ' + notificationId + '. ¿Deseas ir al dashboard o quieres permanecer en la página actual?');
+            if (confirmed) {
+                window.location.href = '{{ url_for("loged.principal_usuario_logueado") }}';
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function mostrarLogin() {
+            // Lógica para mostrar el formulario de login o perfil
+        }
+    </script>
+</body>
+
+</html>

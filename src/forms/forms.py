@@ -20,3 +20,11 @@ class RegisterForm(FlaskForm):
     celular = StringField('Celular', validators=[DataRequired(), Length(min=7, max=15)])
     ciudad = StringField('Ciudad', validators=[DataRequired(), Length(min=2, max=50)])
     submit = SubmitField('Registrarse')
+
+
+class EditProfileForm(FlaskForm):
+    nombre = StringField('Nombre', validators=[DataRequired(), Length(max=50)])
+    apellidos = StringField('Apellidos', validators=[DataRequired(), Length(max=50)])
+    celular = IntegerField('Celular')
+    ciudad = StringField('Ciudad', validators=[DataRequired(), Length(max=50)])
+    submit = SubmitField('Guardar cambios')
