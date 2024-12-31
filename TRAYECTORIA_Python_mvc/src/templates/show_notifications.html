@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/c4d33f5660.js" crossorigin="anonymous"></script>
+    <title>Notificaciones</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <header>
+      <h2 class="logo">TRAYECTORIA</h2>
+      <nav class="navegacion">
+        <a href="{{ url_for('main.index') }}">Inicio</a>
+        <a href="#">Feedbacks</a>
+        <a href="#">Calificaciones Recibidas</a>
+        <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">Ir a Zajuna</a>
+        <button class="btn" onclick="window.location.href='{{ url_for('profile.edit_profile') }}'">Editar perfil</button>
+      </nav>
+    </header>
+
+    <div class="contenedor-form registrar">
+      <h2>Notificaciones</h2><br>
+
+      <!-- Mostrar mensajes flash -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-messages">
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <ul>
+        {% for notification in notifications %}
+          <li class="{% if not notification.is_read %}unread{% endif %}">
+            <p>{{ notification.message }} - {{ notification.timestamp }}</p>
+            
+            {% if notification.request_id %}
+              <p><strong>Solicitud ID:</strong> {{ notification.request_id }}</p>
+            {% endif %}
+
+            <!-- Mostrar el mensaje de solicitud de más detalles si existe -->
+            {% if notification.request_message_details %}
+              <div class="detalle-solicitud">
+                <p>{{ notification.request_message_details }}</p>
+              </div>
+            {% endif %}
+
+            <!-- Mostrar la pregunta recibida (si existe) -->
+            {% if notification.questions %}
+              <div class="pregunta">
+                <p><strong>Pregunta:</strong> {{ notification.questions }}</p>
+              </div>
+            {% endif %}
+
+            <!-- Botones de acción -->
+            <div class="acciones">
+              <!-- Botón para aceptar -->
+              <form method="POST" action="{{ url_for('recive.accept_notification', notification_id=notification.id) }}" onsubmit="return confirmAction('{{ notification.id }}')">
+                <button type="submit" class="btn aceptar">Aceptar</button>
+              </form>
+
+              <!-- Botón para rechazar -->
+              <form method="POST" action="{{ url_for('recive.reject_notification', notification_id=notification.id) }}">
+                <button type="submit" class="btn rechazar">Rechazar</button>
+              </form>
+
+              <!-- Formulario para solicitar más detalles -->
+              <form method="POST" action="{{ url_for('recive.more_details', notification_id=notification.request_id) }}">
+                <textarea name="questions" placeholder="Escribe tu pregunta aquí..." required></textarea>
+                <button type="submit" class="btn detalles">Solicitar Más Detalles</button>
+              </form>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>

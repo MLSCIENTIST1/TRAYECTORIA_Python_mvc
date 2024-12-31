@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/c4d33f5660.js" crossorigin="anonymous"></script>
+    <title>resultado de filtro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+</head>
+<body>
+    <header>
+        <h2 class="logo">TRAYECTORIA</h2>
+        <nav class="navegacion">
+            <a href="{{ url_for('main.index') }}">inicio</a>
+            <a href="#">Feedbacks</a>
+            <a href="#">Notificaciones</a>
+            <a href="#">Calificaciones Recibidas</a>
+            <a href="{{ url_for('main.logout') }}">Cerrar sesión</a>
+            
+            <button class="btn" onclick="window.location.href='{{ url_for('profile.edit_profile') }}'">Editar perfil</button>
+
+            
+            
+            
+        </nav>
+    </header>
+
+    <div class="contenedor-form login">
+        <h2>Resultado de Búsqueda</h2>
+        
+        <!-- Mostrar los resultados de la búsqueda -->
+        {% if resultados %}
+            <ul>
+                {% for usuario in resultados %}
+                    <li>
+                        <a href="{{ url_for('search.detalle_candidato', id_usuario=usuario.id_usuario) }}">
+                            <strong>Nombre:</strong> {{usuario.nombre}} <br>
+                            <strong>Apellidos</strong>{{usuario.apellidos}} <br>
+                            <strong>Correo</strong>{{usuario.correo}} <br>
+                            <strong>Labor:</strong> {{ usuario.labor }}<br>
+                            <strong>Ciudad:</strong> {{ usuario.ciudad }} <br>
+                            
+                            
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No se encontraron resultados.</p>
+        {% endif %}
+    </div>
+            
+    </div>
+    
+    <script>
+        function mostrarLogin() {
+            document.getElementById('loginFondo').classList.add('active');
+        }
+
+        function cerrarLogin() {
+            document.getElementById('loginFondo').classList.remove('active');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html> 
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/c4d33f5660.js" crossorigin="anonymous"></script>
+    <title>Usuario Logueadoo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+      // Mensaje para confirmar que el script está funcionando
+      console.log("Archivo HTML cargado correctamente.");
+    </script>
+  </head>
+  <body>
+    <header>
+      <h2 class="logo">TRAYECTORIA</h2>
+      <nav class="navegacion">
+        <a href="{{ url_for('loged.principal_usuario_logueado') }}">Inicio</a>
+        <a href="#">Feedbacks</a>
+        <a href="#">Calificaciones Recibidas</a>
+        <a href="{{ url_for('main.index') }}">Cerrar sesión</a>
+        <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">Ir a Zajuna</a>
+        <button class="btn" onclick="mostrarLogin()">Editar perfil</button>
+      </nav>
+    </header>
+
+    <div class="contenedor-form registrar">
+      <h2>Trayectoria de:</h2>
+      <br>
+
+      <!-- Información del usuario -->
+      <div class="contenedor-input">
+        <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+      </div>
+      <div class="contenedor-input">
+        <p><strong>Correo Electrónico:</strong> {{ usuario.correo }}</p>
+      </div>
+      <div class="contenedor-input">
+        <p><strong>Ciudad:</strong> {{ usuario.ciudad }}</p>
+      </div>
+      <div class="contenedor-input">
+        <p><strong>Labor:</strong> {{ usuario.labor }}</p>
+      </div>
+      <div class="contenedor-input">
+        <p><strong>Disponibilidad inmediata:</strong> (Pendiente agregar código)</p>
+      </div>
+      <div class="contenedor-input">
+        <p><strong>Celular:</strong> {{ usuario.celular }}</p>
+      </div>
+      <div class="contenedor-input">
+        <p><strong>Última Calificación:</strong> (Pendiente agregar código)</p>
+      </div>
+      <div class="contenedor-input">
+        <p><strong>Calificación Global:</strong> (Pendiente agregar código)</p>
+      </div>
+
+      <!-- Checkbox para aceptar términos -->
+      <div class="recordar">
+        <label for="aceptar-terminos">
+          <input type="checkbox" id="aceptar-terminos"> Chatear antes de contratar (Pendiente agregar código)
+        </label><br>
+      </div>
+
+      <!-- Formulario de contratación -->
+      <form id="contratarForm" action="{{ url_for('notifications.notifications', candidato_id=usuario.id_usuario) }}" method="POST">
+        <button type="submit" class="btn">Contratar</button>
+      </form>
+
+      <div class="registrar">
+        <p>No es lo que esperabas? (Pendiente agregar código) <a href="#" class="login-link">SIGUIENTE →</a></p>
+        <p>¿Volver? <a href="#" class="login-link">Atrás</a></p>
+      </div>
+    </div>
+
+    <!-- Espacio para mostrar mensajes del estado -->
+    <div id="statusMessage" style="margin-top: 20px; color: blue; font-weight: bold;"></div>
+
+    <!-- Script para manejar eventos y depuración -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("El DOM está completamente cargado.");
+
+        // Buscar el formulario
+        const contratarForm = document.getElementById('contratarForm');
+        const statusMessage = document.getElementById('statusMessage');
+
+        if (!contratarForm) {
+          console.error("Formulario 'contratarForm' no encontrado.");
+          return; // Detenemos el script si el formulario no existe
+        }
+
+        // Agregar el evento submit al formulario
+        contratarForm.addEventListener('submit', async function(event) {
+          event.preventDefault(); // Evita el envío del formulario por ahora
+          console.log("Intentando enviar el formulario...");
+
+          // Mostrar datos capturados
+          const formData = new FormData(contratarForm);
+          console.log("Datos enviados:", Object.fromEntries(formData));
+
+          // Confirmación de envío
+          if (!confirm('¿Estás seguro de que deseas contratar a este usuario?')) {
+            console.log('Formulario no enviado - Cancelado por el usuario.');
+            return;
+          }
+
+          // Enviar datos al servidor con fetch
+          try {
+            statusMessage.textContent = "Enviando...";
+            const response = await fetch(contratarForm.action, {
+              method: 'POST',
+              body: formData,
+            });
+
+            if (response.ok) {
+              console.log("Formulario enviado exitosamente.");
+              statusMessage.textContent = "¡Formulario enviado correctamente!";
+            } else {
+              console.error("Error al enviar el formulario:", response.status, response.statusText);
+              statusMessage.textContent = `Error al enviar: ${response.status}`;
+            }
+          } catch (error) {
+            console.error("Error durante el envío del formulario:", error);
+            statusMessage.textContent = `Error durante el envío: ${error.message}`;
+          }
+        });
+      });
+
+      // Funciones para manejar la ventana de login
+      function mostrarLogin() {
+        console.log("Se intentó mostrar la ventana de edición de perfil.");
+        const loginFondo = document.getElementById('loginFondo');
+        if (loginFondo) loginFondo.classList.add('active');
+      }
+
+      function cerrarLogin() {
+        console.log("Se intentó cerrar la ventana de edición de perfil.");
+        const loginFondo = document.getElementById('loginFondo');
+        if (loginFondo) loginFondo.classList.remove('active');
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h2 class="logo">Editar Perfil</h2>
+    </header>
+
+    <div class="container">
+        <h3>Actualizar Información</h3>
+        <form method="POST" action="{{ url_for('profile.edit_profile') }}">
+
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.nombre.label }}
+                {{ form.nombre(size=32, class_='input') }}
+            </div>
+            <div>
+                {{ form.apellidos.label }}
+                {{ form.apellidos(size=32, class_='input') }}
+            </div>
+            <div>
+                {{ form.celular.label }}
+                {{ form.celular(size=15, class_='input') }}
+            </div>
+            <div>
+                {{ form.ciudad.label }}
+                {{ form.ciudad(size=20, class_='input') }}
+            </div>
+            <div>
+                {{ form.submit(class_='btn') }}
+            </div>
+        </form>
+        <a href="{{ url_for('profile.editando') }}">Volver</a>
+    </div>
+</body>
+</html>
