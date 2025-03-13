@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/c4d33f5660.js" crossorigin="anonymous"></script>
     <title>Usuario Logueadoo</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script>
       // Mensaje para confirmar que el script está funcionando
       console.log("Archivo HTML cargado correctamente.");
@@ -14,6 +14,7 @@
   <body>
     <header>
       <h2 class="logo">TRAYECTORIA</h2>
+      <h4>{{current_user.nombre|upper}}</h4>
       <nav class="navegacion">
         <a href="{{ url_for('loged.principal_usuario_logueado') }}">Inicio</a>
         <a href="#">Feedbacks</a>

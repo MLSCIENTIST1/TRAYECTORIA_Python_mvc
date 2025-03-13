@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/c4d33f5660.js" crossorigin="anonymous"></script>
+    <title>Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header>
+        <h2 class="logo">TRAYECTORIA</h2>
+        <h4>{{ current_user.nombre|upper }}</h4>
+        <nav class="navegacion">
+            <a href="{{ url_for('main.index') }}">Inicio</a>
+            <a href="{{ url_for('recive.show_notifications') }}">Notificaciones</a>
+            <a href="{{ url_for('dashboard.dashboard') }}">Mi dashboard</a>
+            <a href="{{ url_for('profile.editando') }}">Buscar Candidatos</a>
+            <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">Ir a Zajuna</a>
+            <a href="{{ url_for('main.logout') }}">Cerrar sesión</a>
+            <button class="btn" onclick="window.location.href='{{ url_for('profile.edit_profile') }}'">Editar perfil</button>
+        </nav>
+    </header>
+
+    <div class="contenedor-chat">
+        <h2>Chat de Notificación</h2>
+
+        <!-- Mostrar mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="chat-messages">
+            {% for message in messages %}
+            <div class="mensaje">
+                <p><strong>{{ message.sender.nombre }}:</strong> {{ message.content }}</p>
+                <span class="timestamp">{{ message.timestamp }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="chat-input">
+            <form action="{{ url_for('recive.more_details', notification_id=notification_id) }}" method="post">
+                <textarea name="questions" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                <button type="submit" class="btn">Enviar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function mostrarLogin() {
+            document.getElementById('loginFondo').classList.add('active');
+        }
+
+        function cerrarLogin() {
+            document.getElementById('loginFondo').classList.remove('active');
+        }
+    </script>
+</body>
+
+</html>

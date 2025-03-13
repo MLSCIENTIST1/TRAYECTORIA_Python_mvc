@@ -1,3 +1,9 @@
+
+from .notification import Notification
+from .servicio import Servicio
+from .message import Message
+from .usuarios import Usuario
+
 from src.models.database import db, init_app, create_database, DATABASE_URL
 
 # Crear la base de datos al cargar el módulo

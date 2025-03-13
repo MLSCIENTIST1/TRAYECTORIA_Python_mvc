@@ -15,7 +15,7 @@ def read_config(file_path):
     return config
 
 # Leer las configuraciones desde el archivo `database.conf`
-config = read_config(r'C:\Users\carlo\Desktop\proyecto sena\TRAYECTORIA_Python_mvc\src\models\database.conf')
+config = read_config(r'C:\Users\carlo\Desktop\proyecto_sena\TRAYECTORIA_Python_mvc\src\models\database.conf')
 host = config['database']['host']
 user = config['database']['user']
 password = config['database']['password']

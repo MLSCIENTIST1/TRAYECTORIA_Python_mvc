@@ -5,6 +5,7 @@ from src.models.database import db
 # Configurar logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
 file_handler = logging.FileHandler('notifications.log')
 file_handler.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -19,7 +20,6 @@ class Notification(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('usuario.id_usuario'), nullable=False)
     request_id = db.Column(db.Integer, nullable=True)  # ID de solicitud relacionado
     is_accepted = db.Column(db.Boolean, default=False)
-    message = db.Column(db.String(256), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     is_read = db.Column(db.Boolean, default=False)
     type = db.Column(db.String, default='default_type')
@@ -28,19 +28,19 @@ class Notification(db.Model):
     request_message_details = db.Column(db.String(255), nullable=True)
     questions = db.Column(db.String(255), nullable=True)
 
+    # Relación con Message
+    messages = db.relationship('Message', back_populates='notification')
+
     @classmethod
-    def create_notification(cls, user_id, request_id, message, params=None, extra_data=None):
+    def create_notification(cls, user_id, request_id, messages, params=None, extra_data=None):
         try:
             notification_type = params.get('type', 'default_type') if params else 'default_type'
-            
             notification = cls(
                 user_id=user_id,
                 request_id=request_id,
-                message=message,
                 type=notification_type,
                 extra_data=extra_data
             )
-            
             db.session.add(notification)
             db.session.commit()
             logger.info(f"Notificación creada: {notification}")
@@ -53,29 +53,24 @@ class Notification(db.Model):
     @classmethod
     def accept_notification(cls, notification_id):
         try:
-            # Recuperar la notificación
             notification = cls.query.get(notification_id)
             if not notification:
                 logger.error(f"No se encontró la notificación con ID {notification_id}.")
                 return False
-            
             if notification.is_accepted:
                 logger.info(f"La notificación con ID {notification_id} ya estaba aceptada.")
                 return True
-            
-            # Actualizar el campo is_accepted
             notification.is_accepted = True
             db.session.commit()
-
-            # Refrescar el objeto notification para obtener los datos más actualizados
-            db.session.refresh(notification)  # Esto recarga el objeto desde la base de datos
+            db.session.refresh(notification)
             logger.debug(f"Estado de la notificación después de commit: {notification}")
-
             logger.info(f"Notificación con ID {notification_id} aceptada.")
             return True
-
-            
         except Exception as e:
             logger.error(f"Error al aceptar la notificación: {e}", exc_info=True)
             db.session.rollback()
             return False
+
+# Importar Message y Usuario después de definir Notification
+from src.models.message import Message
+from src.models.usuarios import Usuario

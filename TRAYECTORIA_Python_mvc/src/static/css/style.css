@@ -11,8 +11,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background: url(5158083.jpg);
+    min-height: 110vh;
+    background: url('/static/images/pfondo.jpg'); 
     background-size: cover;
     background-position: center;
 }
@@ -39,7 +39,7 @@ header {
 .navegacion a {
     position: relative;
     font-size: 1.1rem;
-    color: #181717;
+    color: #faf6f6;
     text-decoration: none;
     font-weight: 500;
     margin-left: 30px;
@@ -52,7 +52,7 @@ header {
     bottom: -6px;
     left: 0;
     height: 2px;
-    background: rgb(26, 14, 14);
+    background: gray;
     transform: scaleX(0);
     transform-origin: right;
     transition: transform 0.4s;
@@ -60,7 +60,7 @@ header {
 
 .navegacion a:hover::after {
     transform: scaleX(1);
-    transform-origin: left;
+    transform-origin: right;
 }
 
 .navegacion .btn {
@@ -79,12 +79,31 @@ header {
 .navegacion .btn:hover {
     background: gray;
     color: white;
+    transform: scaleX(1.02);
+    transform-origin: right;
 }
 
 .fondo {
     position: relative;
     width: 400px;
-    height: 440px;
+    height: 800px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    backdrop-filter: blur(25px); 
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    transition: transform 0.5s ease, height 0.2s ease;
+    transform: scale(1);
+    left: -2%;
+}
+
+.fondo_2 {
+    position: relative;
+    width: 400px;
+    height: 450px;
     background: transparent;
     border: 2px solid rgba(255, 255, 255, 0.5);
     border-radius: 20px;
@@ -99,7 +118,7 @@ header {
 }
 
 .fondo.active {
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) scale(0.5);
 }
 
 .fondo .contenedor-form {
@@ -110,6 +129,7 @@ header {
 .fondo .contenedor-form.login {
     transition: 0.17s ease;
     transform: translateX(0);
+    
 }
 
 .fondo.active .contenedor-form.login {
@@ -125,18 +145,19 @@ header {
 /* Corregido */
 .fondo .contenedor-form.registrar {
     position: relative;
-    width: 400px;
-    height: 440px;
-    background: transparent;
+    width: 90%;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
     border: 2px solid rgba(255, 255, 255, 0.5);
     border-radius: 20px;
     backdrop-filter: blur(25px); 
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
     display: flex;
-    justify-content: center;
-    
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px; /* Añade espacio entre los elementos */
     transition: transform 0.5s ease, height 0.2s ease;
-    transform: scale(0);
+    transform: scale(1);
     left: 8%;
 }
 

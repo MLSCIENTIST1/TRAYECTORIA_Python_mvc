@@ -11,7 +11,7 @@ from src.controllers.loged_controller import loged_bp
 from src.controllers.send_controller import notifications_bp
 from src.controllers.recive_notifications import recive_notifications_bp
 from src.controllers.dashboard_controller import dashboard_bp
-from src.controllers.recive_notifications import detail_request_bp
+"""from src.controllers.recive_notifications import detail_request_bp"""
 
 from src.models.usuarios import Usuario
 
@@ -77,7 +77,7 @@ def create_app():
     app.register_blueprint(notifications_bp, url_prefix='/notifications')
     app.register_blueprint(recive_notifications_bp, url_prefix='/recive')   
     app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
-    app.register_blueprint(detail_request_bp, url_prefix='/detail')   
+    """app.register_blueprint(detail_request_bp, url_prefix='/detail_request')   """
     logger.info("Blueprints registrados correctamente")
 
     return app
