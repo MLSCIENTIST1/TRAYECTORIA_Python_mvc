@@ -1,6 +1,6 @@
 import logging
 from src import create_app
-
+from flask_migrate import Migrate
 # Configurar el logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

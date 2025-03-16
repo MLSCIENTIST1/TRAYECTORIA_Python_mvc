@@ -4,7 +4,7 @@ from flask_login import current_user
 from src.models.servicio import Servicio
 from src.models.calificacion import Calificacion
 from src.models.database import db
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 # Configurar logger
 logger = logging.getLogger(__name__)
@@ -29,29 +29,80 @@ def show_calificar():
         )
     ).all()
 
-    # Mostrar contratos en la plantilla
+    logger.debug(f"Contratos vigentes para el usuario {current_user.id_usuario}: {[c.id_servicio for c in contracts]}")
     return render_template('calificar.html', contracts=contracts)
+
 
 @calificar.route('/rate_contratante/<int:servicio_id>', methods=['POST'])
 def rate_contratante(servicio_id):
     try:
-        # Obtener el servicio por ID
         servicio = Servicio.query.get_or_404(servicio_id)
 
         # Validar que el usuario es el contratante
         if servicio.id_contratante != current_user.id_usuario:
-            flash("No puedes calificar este servicio porque no eres el contratante.", "error")
-            return redirect(url_for('calificar.calificar'))
+            flash("No tienes permisos para calificar este servicio.", "error")
+            return redirect(url_for('calificar.show_calificar'))
 
-        # Obtener las calificaciones del formulario
+        # Obtener datos del formulario
         cal1 = request.form.get('cal_contratante1', type=int)
         cal2 = request.form.get('cal_contratante2', type=int)
         cal3 = request.form.get('cal_contratante3', type=int)
+        comentario = request.form.get('comentario_contratante', type=str)
 
-        # Validar que las calificaciones estén en el rango permitido
+        # Validar valores
         if not (1 <= cal1 <= 10 and 1 <= cal2 <= 10 and 1 <= cal3 <= 10):
             flash("Las calificaciones deben estar entre 1 y 10.", "error")
-            return redirect(url_for('calificar.calificar'))
+            return redirect(url_for('calificar.show_calificar'))
+
+        # Crear o actualizar la calificación
+        calificacion = Calificacion.query.filter_by(servicio_id=servicio.id_servicio, usuario_id=current_user.id_usuario).first()
+        if not calificacion:
+            calificacion = Calificacion(
+                servicio_id=servicio.id_servicio,
+                usuario_id=current_user.id_usuario,
+                calificacion_recived_contratado1=cal1,
+                calificacion_recived_contratado2=cal2,
+                calificacion_recived_contratado3=cal3,
+                comentary_employer_hired=comentario  # Columna correcta
+            )
+            db.session.add(calificacion)
+        else:
+            calificacion.calificacion_recived_contratado1 = cal1
+            calificacion.calificacion_recived_contratado2 = cal2
+            calificacion.calificacion_recived_contratado3 = cal3
+            calificacion.comentary_employer_hired = comentario  # Columna correcta
+
+        # Guardar cambios
+        db.session.commit()
+        flash("Calificación como contratante guardada correctamente.", "success")
+    except Exception as e:
+        logger.exception("Error al calificar como contratante.")
+        db.session.rollback()
+        flash("Hubo un error al procesar la calificación.", "error")
+
+    return redirect(url_for('calificar.show_calificar'))
+
+
+@calificar.route('/rate_contratado/<int:servicio_id>', methods=['POST'])
+def rate_contratado(servicio_id):
+    try:
+        servicio = Servicio.query.get_or_404(servicio_id)
+
+        # Validar que el usuario es el contratado
+        if servicio.id_contratado != current_user.id_usuario:
+            flash("No tienes permisos para calificar como contratado.", "error")
+            return redirect(url_for('calificar.show_calificar'))
+
+        # Obtener datos del formulario
+        cal1 = request.form.get('cal_contratado1', type=int)
+        cal2 = request.form.get('cal_contratado2', type=int)
+        cal3 = request.form.get('cal_contratado3', type=int)
+        comentario = request.form.get('comentario_contratado', type=str)
+
+        # Validar valores
+        if not (1 <= cal1 <= 10 and 1 <= cal2 <= 10 and 1 <= cal3 <= 10):
+            flash("Las calificaciones deben estar entre 1 y 10.", "error")
+            return redirect(url_for('calificar.show_calificar'))
 
         # Crear o actualizar la calificación
         calificacion = Calificacion.query.filter_by(servicio_id=servicio.id_servicio, usuario_id=current_user.id_usuario).first()
@@ -61,23 +112,66 @@ def rate_contratante(servicio_id):
                 usuario_id=current_user.id_usuario,
                 calificacion_recived_contratante1=cal1,
                 calificacion_recived_contratante2=cal2,
-                calificacion_recived_contratante3=cal3
+                calificacion_recived_contratante3=cal3,
+                comentary_hired_employer=comentario  # Columna correcta
             )
             db.session.add(calificacion)
         else:
             calificacion.calificacion_recived_contratante1 = cal1
             calificacion.calificacion_recived_contratante2 = cal2
             calificacion.calificacion_recived_contratante3 = cal3
+            calificacion.comentary_hired_employer = comentario  # Columna correcta
 
-        # Guardar cambios en la base de datos
+        # Guardar cambios
         db.session.commit()
-
-        logger.debug(f"Calificación guardada para el servicio {servicio.id_servicio}: cal1={cal1}, cal2={cal2}, cal3={cal3}")
-        flash("Calificación guardada correctamente.", "success")
+        flash("Calificación como contratado guardada correctamente.", "success")
     except Exception as e:
-        logger.exception("Error al calificar al contratante.")
+        logger.exception("Error al calificar como contratado.")
         db.session.rollback()
         flash("Hubo un error al procesar la calificación.", "error")
 
-    # Redirigir de vuelta a la página de calificaciones
     return redirect(url_for('calificar.show_calificar'))
+
+
+@calificar.route('/calificaciones_recibidas/contratante', methods=['GET'])
+def calificaciones_recibidas_contratante():
+    try:
+        calificaciones = Calificacion.query.join(Servicio).filter(
+            and_(
+                Servicio.id_contratante == current_user.id_usuario,
+                or_(
+                    Calificacion.calificacion_recived_contratante1.isnot(None),
+                    Calificacion.calificacion_recived_contratante2.isnot(None),
+                    Calificacion.calificacion_recived_contratante3.isnot(None)
+                )
+            )
+        ).all()
+
+        logger.debug(f"Calificaciones recibidas como contratante: {[c.id_calificacion for c in calificaciones]}")
+        return render_template('calificaciones_recibidas.html', calificaciones=calificaciones, rol='contratante')
+    except Exception as e:
+        logger.exception("Error al obtener calificaciones recibidas como contratante.")
+        flash("Hubo un error al cargar las calificaciones.", "error")
+        return redirect(url_for('dashboard.dashboard'))
+
+
+@calificar.route('/calificaciones_recibidas/contratado', methods=['GET'])
+def calificaciones_recibidas_contratado():
+    try:
+        calificaciones = Calificacion.query.join(Servicio).filter(
+            and_(
+                Servicio.id_contratado == current_user.id_usuario,
+                or_(
+                    Calificacion.calificacion_recived_contratado1.isnot(None),
+                    Calificacion.calificacion_recived_contratado2.isnot(None),
+                    Calificacion.calificacion_recived_contratado3.isnot(None)
+                )
+            )
+        ).all()
+
+        logger.debug(f"Calificaciones recibidas como contratado: {[c.id_calificacion for c in calificaciones]}")
+        return render_template('calificaciones_recibidas.html', calificaciones=calificaciones, rol='contratado')
+    except Exception as e:
+        logger.exception("Error al obtener calificaciones recibidas como contratado.")
+        flash("Hubo un error al cargar las calificaciones.", "error")
+        return redirect(url_for('dashboard.dashboard'))

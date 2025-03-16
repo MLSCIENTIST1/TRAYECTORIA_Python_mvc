@@ -4,6 +4,7 @@ from src.models.usuarios import Usuario
 from src.models.database import db
 from src.forms.forms import RegisterForm
 
+
 register_bp = Blueprint('register', __name__)
 
 @register_bp.route('/register', methods=['GET', 'POST'])

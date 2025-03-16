@@ -13,6 +13,7 @@ class Message(db.Model):
 
     # Relaciones
     notification = db.relationship('Notification', back_populates='messages')
+    
     sender = db.relationship('Usuario', foreign_keys=[sender_id])
     receiver = db.relationship('Usuario', foreign_keys=[receiver_id])
 

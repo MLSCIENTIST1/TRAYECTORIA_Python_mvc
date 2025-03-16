@@ -18,7 +18,8 @@ class Calificacion(db.Model):
 
     puntaje_por_labor = db.Column(db.Integer, nullable=True)
     puntaje_global = db.Column(db.Integer, nullable=True)
-    comentario = db.Column(db.String, nullable=True)
+    comentary_hired_employer = db.Column(db.String, nullable=True)
+    comentary_employer_hired = db.Column(db.String, nullable=True)
 
     # Relaciones
     usuario = db.relationship("Usuario", back_populates="calificaciones")

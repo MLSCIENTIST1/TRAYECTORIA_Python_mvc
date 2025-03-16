@@ -20,13 +20,14 @@
         {% if contracts %}
             <table>
                 <thead>
+                    
+                    <tr>
+                        <p colspan="2">Aquí puedes realizar la calificación de tus contratos actuales; para una comunidad más transparente trata de ser muy objetivo. La calificación se hace en 3 etapas: en los primeros días, a mitad y una calificación final.</p><br>
+                    </tr><br>
                     <tr>
                         <th>ID Contrato</th>
-                        
-                        <th class="fecha"></th>Aquí puedes realizar la calificacion de tus contratos actuales; Para una comunidad mas transparente trata de ser muy objetivo. La calificación se hace en 3 etapas: en los primeros dias, a mitad y una calificacion final.</th>
-                        
+                        <th>Calificar</th>
                     </tr>
-                    
                 </thead>
                 <br>
                 <tbody>
@@ -36,18 +37,37 @@
                             
                             
                             <td>
-                                <form action="{{ url_for('dashboard.rate_contratante', servicio_id=contract.id_servicio) }}" method="POST">
-                                    <label for="cal_contratante1">Primera etapa:</label>
+                                {% if contract.id_contratante == current_user.id_usuario %}
+                                <form action="{{ url_for('calificar.rate_contratante', servicio_id=contract.id_servicio) }}" method="POST">
+                                    <label for="cal_contratante1">Primera etapa   :</label>
                                     <input type="number" name="cal_contratante1" min="1" max="10" required>
 
-                                    <label for="cal_contratante2">Segunda etapa:</label>
+                                    <label for="cal_contratante2">Segunda etapa     :</label>
                                     <input type="number" name="cal_contratante2" min="1" max="10" required>
 
-                                    <label for="cal_contratante3">Etapa final:</label>
-                                    <input type="number" name="cal_contratante3" min="1" max="10" required>
+                                    <label for="cal_contratante3">Etapa final     :</label>
+                                    <input type="number" name="cal_contratante3" min="1" max="10" required><br><br>
 
-                                    <button type="submit">Calificar</button>
-                                </form>
+                                    
+                                    <label for="comentario_contratante">Comentario final:</label><br>
+                                    <textarea name="comentario_contratante" rows="3" placeholder="Escribe tu comentario aquí..."></textarea><br><br>
+                                    <button type="submit" class="btn">Guardar Calificación</button>
+                                    
+                                </form><br>
+                                {% elif contract.id_contratado == current_user.id_usuario %}
+                                
+                                <form action="{{ url_for('calificar.rate_contratado', servicio_id=contract.id_servicio) }}" method="POST">
+                                    <label for="cal_contratado1">Inicio:</label>
+                                    <input type="number" name="cal_contratado1" min="1" max="10" required>
+                                    <label for="cal_contratado2">Mitad:</label>
+                                    <input type="number" name="cal_contratado2" min="1" max="10" required>
+                                    <label for="cal_contratado3">Final:</label>
+                                    <input type="number" name="cal_contratado3" min="1" max="10" required><br><br>
+                                    <label for="comentario_contratado">Comentario final:</label><br>
+                                    <textarea name="comentario_contratado" rows="3" placeholder="Escribe tu comentario aquí..."></textarea><br><br>
+                                    <button type="submit" class="btn">Guardar Calificación</button>
+                                    
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

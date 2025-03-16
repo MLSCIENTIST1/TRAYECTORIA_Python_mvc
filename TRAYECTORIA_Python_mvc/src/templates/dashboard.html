@@ -16,10 +16,7 @@
             <a href="{{ url_for('recive.show_notifications') }}">Notificaciones</a>
             <a href="{{ url_for('dashboard.dashboard') }}">Mi dashboard</a>
             <a href="{{url_for('profile.editando')}}">Buscar Candidatos</a>
-            
-            
-            
-            <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">ir a zajuna</a>
+            <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">Ir a Zajuna</a>
             <a href="{{ url_for('main.logout') }}">Cerrar sesión</a>
             <button class="btn" onclick="window.location.href='{{ url_for('profile.edit_profile') }}'">Editar perfil</button>
         </nav>
@@ -27,25 +24,71 @@
 
     <div class="contenedor">
         <h1>Dashboard</h1>
+        
         {% if contract_count_contratante > 0 %}
-        <p>Eres contratante en {{ contract_count_contratante }} contratos.</p>
-    {% endif %}
-    
-    {% if contract_count_contratado > 0 %}
-        <p>Eres contratado en {{ contract_count_contratado }} contratos.</p>
-    {% endif %}
-
-
-
-        <button onclick="location.href='{{ url_for('dashboard.vigent_contracts') }}'" class="btn" aria-label="Ver contratos como contratante" {% if contract_count_contratante == 0 %}disabled{% endif %}>
-            Contratos como contratante: {{ contract_count_contratante  }}
+            <p>Eres contratante en {{ contract_count_contratante }} contratos.</p>
+        {% endif %}
+        
+        {% if contract_count_contratado > 0 %}
+            <p>Eres contratado en {{ contract_count_contratado }} contratos.</p>
+        {% endif %}
+        
+        <!-- Botón para contratos como contratante -->
+        <button onclick="location.href='{{ url_for('dashboard.vigent_contracts') }}'" class="btn" 
+                aria-label="Ver contratos como contratante" 
+                {% if contract_count_contratante == 0 %}disabled{% endif %}>
+            Contratos como contratante: {{ contract_count_contratante }}
         </button><br>
-        <button onclick="location.href='{{ url_for('dashboard.vigent_contracts') }}'" class="btn" aria-label="Ver contratos como contratado" {% if contract_count_contratado == 0 %}disabled{% endif %}>
-            Contratos como contratado: {{ contract_count_contratado}}
+
+        <!-- Botón para contratos como contratado -->
+        <button onclick="location.href='{{ url_for('dashboard.vigent_contracts') }}'" class="btn" 
+                aria-label="Ver contratos como contratado" 
+                {% if contract_count_contratado == 0 %}disabled{% endif %}>
+            Contratos como contratado: {{ contract_count_contratado }}
+        </button><br><br>
+
+        <button onclick="location.href='{{ url_for('calificar.calificaciones_recibidas_contratante') }}'" class="btn" 
+                aria-label="Ver calificaciones recibidas como contratante" 
+                {% if calification_count_contratante == 0 %}disabled{% endif %}>
+            **PAL***Solicitudes de contratos pendientes por ver: {{ calification_count_contratante }}
+        </button><br>
+
+        <!-- Botón para calificaciones recibidas como contratado -->
+        <button onclick="location.href='{{ url_for('calificar.calificaciones_recibidas_contratado') }}'" class="btn" 
+                aria-label="Ver calificaciones recibidas como contratado" 
+                {% if calification_count_contratado == 0 %}disabled{% endif %}>
+            **PAL*** contratos pendientes por calificar: {{ calification_count_contratado }}
+        </button><br><br>
+
+
+        <!-- Botón para calificaciones recibidas como contratante -->
+        <button onclick="location.href='{{ url_for('calificar.calificaciones_recibidas_contratante') }}'" class="btn" 
+                aria-label="Ver calificaciones recibidas como contratante" 
+                {% if calification_count_contratante == 0 %}disabled{% endif %}>
+            Calificaciones recibidas como contratante: {{ calification_count_contratante }}
+        </button><br>
+
+        <!-- Botón para calificaciones recibidas como contratado -->
+        <button onclick="location.href='{{ url_for('calificar.calificaciones_recibidas_contratado') }}'" class="btn" 
+                aria-label="Ver calificaciones recibidas como contratado" 
+                {% if calification_count_contratado == 0 %}disabled{% endif %}>
+            Calificaciones recibidas como contratado: {{ calification_count_contratado }}
+        </button><br><br>
+
+        <!-- Botón para calificaciones recibidas como contratante -->
+        <button onclick="location.href='{{ url_for('calificar.calificaciones_recibidas_contratante') }}'" class="btn" 
+                aria-label="Ver calificaciones recibidas como contratante" 
+                {% if calification_count_contratante == 0 %}disabled{% endif %}>
+            **PAL***La media de tu ultima calificacion recibida: {{ calification_count_contratante }}
+        </button><br>
+
+        <!-- Botón para calificaciones recibidas como contratado -->
+        <button onclick="location.href='{{ url_for('calificar.calificaciones_recibidas_contratado') }}'" class="btn" 
+                aria-label="Ver calificaciones recibidas como contratado" 
+                {% if calification_count_contratado == 0 %}disabled{% endif %}>
+            **PAL***Tu escore total en trayectoria: {{ calification_count_contratado }}
         </button>
-        <button onclick="location.href='{{ url_for('dashboard.vigent_contracts') }}'" class="btn" aria-label="Ver contratos como contratado" {% if contract_count_contratado == 0 %}disabled{% endif %}>
-            Calificaciones recibidas: {{ contract_count_contratado}}
-        </button>
+
     </div>
    
     <script>
