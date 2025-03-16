@@ -15,9 +15,14 @@ class Servicio(db.Model):
     fecha_fin = Column(Date, nullable=False)
     nombre_contratante = Column(String, nullable=False)
     id_contratante = Column(Integer, ForeignKey('usuario.id_usuario'), nullable=False)
+    id_contratado = Column(Integer, ForeignKey('usuario.id_usuario'), nullable=True)  # Nuevo campo
+
+    contratante = relationship("Usuario", foreign_keys=[id_contratante], back_populates="servicios_como_contratante")
+    contratado = relationship("Usuario", foreign_keys=[id_contratado], back_populates="servicios_como_contratado")
 
     # Relación con usuarios
     usuarios = relationship("Usuario", secondary=usuario_servicio, back_populates="servicios")
+    calificaciones = db.relationship("Calificacion", back_populates="servicio")
 
     def __init__(self, nombre_servicio, fecha_solicitud, fecha_aceptacion, fecha_inicio, fecha_fin, nombre_contratante, id_contratante):
         self.nombre_servicio = nombre_servicio

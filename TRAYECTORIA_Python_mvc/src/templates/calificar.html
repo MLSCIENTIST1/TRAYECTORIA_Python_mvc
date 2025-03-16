@@ -22,9 +22,7 @@
                 <thead>
                     <tr>
                         <th>ID Contrato</th>
-                        <th>Nombre</th>
-                        <th class="fecha">Fecha Inicio</th>
-                        <th class="fecha"> Fecha Fin</th> </th>
+                        
                         <th class="fecha"></th>Aquí puedes realizar la calificacion de tus contratos actuales; Para una comunidad mas transparente trata de ser muy objetivo. La calificación se hace en 3 etapas: en los primeros dias, a mitad y una calificacion final.</th>
                         
                     </tr>
@@ -35,13 +33,20 @@
                     {% for contract in contracts %}
                         <tr>
                             <td >{{ contract.id_servicio }}</td>
-                            <td class="fecha">{{ contract.nombre_servicio }}</td>
-                            <td class="fecha"> {{ contract.fecha_inicio }}</td>
-                            <td class="fecha">{{ contract.fecha_fin   }}</td>
+                            
                             
                             <td>
-                                <form action="{{ url_for('calificar.rate_contratante', servicio_id=contract.id_servicio) }}" method="POST">
-                                    <button type="submit" class="btn">Ir a calificar</button>
+                                <form action="{{ url_for('dashboard.rate_contratante', servicio_id=contract.id_servicio) }}" method="POST">
+                                    <label for="cal_contratante1">Primera etapa:</label>
+                                    <input type="number" name="cal_contratante1" min="1" max="10" required>
+
+                                    <label for="cal_contratante2">Segunda etapa:</label>
+                                    <input type="number" name="cal_contratante2" min="1" max="10" required>
+
+                                    <label for="cal_contratante3">Etapa final:</label>
+                                    <input type="number" name="cal_contratante3" min="1" max="10" required>
+
+                                    <button type="submit">Calificar</button>
                                 </form>
                             </td>
                         </tr>

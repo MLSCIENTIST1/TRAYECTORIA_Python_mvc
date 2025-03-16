@@ -11,12 +11,14 @@ class Message(db.Model):
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-    # Relación con Notification
+    # Relaciones
     notification = db.relationship('Notification', back_populates='messages')
+    sender = db.relationship('Usuario', foreign_keys=[sender_id])
+    receiver = db.relationship('Usuario', foreign_keys=[receiver_id])
 
     def __repr__(self):
-        return f"<Messages {self.id} from {self.sender_id} to {self.receiver_id}>"
+        return f"<Message {self.id} from {self.sender_id} to {self.receiver_id}>"
 
-# Importar Notification y Usuario después de definir Message
+# Importaciones después de definir Message
 from src.models.notification import Notification
 from src.models.usuarios import Usuario

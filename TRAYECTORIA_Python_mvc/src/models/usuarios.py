@@ -9,7 +9,6 @@ from src.models.usuario_servicio import usuario_servicio
 class Usuario(db.Model, UserMixin):
     __tablename__ = "usuario"
 
-    # Definición de columnas
     id_usuario = Column(Integer, primary_key=True)
     nombre = Column(String, nullable=False)
     apellidos = Column(String, nullable=False)
@@ -20,9 +19,17 @@ class Usuario(db.Model, UserMixin):
     celular = Column(BigInteger, nullable=False)
     ciudad = Column(String, nullable=False)
 
-    # Relaciones
+    # Relaciones con Notification
+    received_notifications = relationship("Notification", foreign_keys='Notification.user_id', back_populates='receiver')
+    sent_notifications = relationship("Notification", foreign_keys='Notification.sender_id', back_populates='sender')
+
+    # Relaciones con Servicio
     servicios = relationship("Servicio", secondary=usuario_servicio, back_populates="usuarios", lazy='select')
-    notifications = relationship("Notification", backref="usuario", lazy='select')
+
+    # Nueva relación con Calificacion
+    calificaciones = relationship("Calificacion", back_populates="usuario", cascade="all, delete-orphan")
+    servicios_como_contratante = relationship("Servicio", foreign_keys="[Servicio.id_contratante]", back_populates="contratante")
+    servicios_como_contratado = relationship("Servicio", foreign_keys="[Servicio.id_contratado]", back_populates="contratado")
 
     def __init__(self, nombre, apellidos, correo, contrasenia, labor, cedula, celular, ciudad):
         self.nombre = nombre
@@ -36,12 +43,9 @@ class Usuario(db.Model, UserMixin):
 
     # Métodos para manejar contraseñas
     def set_password(self, password):
-        """Hash y almacena la contraseña."""
         self.contrasenia = generate_password_hash(password, method='pbkdf2:sha256')
 
     def check_password(self, password):
-        """Valida la contraseña ingresada."""
-        print("password")
         return check_password_hash(self.contrasenia, password)
 
     def get_id(self):
@@ -49,7 +53,6 @@ class Usuario(db.Model, UserMixin):
 
     # CRUD
     def crear(self, session):
-        """Crea un nuevo usuario."""
         try:
             if session.query(Usuario).filter_by(correo=self.correo).first():
                 raise ValueError("El correo ya está registrado.")
@@ -61,11 +64,9 @@ class Usuario(db.Model, UserMixin):
 
     @staticmethod
     def leer(session, id_usuario):
-        """Lee un usuario por ID."""
         return session.query(Usuario).filter_by(id_usuario=id_usuario).first()
 
     def actualizar(self, session, **kwargs):
-        """Actualiza los campos de un usuario."""
         for key, value in kwargs.items():
             if hasattr(self, key):
                 setattr(self, key, value)
@@ -73,7 +74,6 @@ class Usuario(db.Model, UserMixin):
 
     @staticmethod
     def eliminar(session, id_usuario):
-        """Elimina un usuario por ID."""
         usuario = session.query(Usuario).filter_by(id_usuario=id_usuario).first()
         if usuario:
             session.delete(usuario)

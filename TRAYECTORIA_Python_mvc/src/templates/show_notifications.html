@@ -13,16 +13,12 @@
       <h4>{{current_user.nombre|upper}}</h4>
       <nav class="navegacion">
         <a href="{{ url_for('main.index') }}">Inicio</a>
-            <a href="{{ url_for('recive.show_notifications') }}">Notificaciones</a>
-            <a href="{{ url_for('dashboard.dashboard') }}">Mi dashboard
-            <a href="{{url_for('profile.editando')}}">Buscar Candidatos</a>
-            
-            
-            
-            <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">ir a zajuna</a>
-            <a href="{{ url_for('main.logout') }}">Cerrar sesión</a>
-            <button class="btn" onclick="window.location.href='{{ url_for('profile.edit_profile') }}'">Editar perfil</button>
-
+        <a href="{{ url_for('recive.show_notifications') }}">Notificaciones</a>
+        <a href="{{ url_for('dashboard.dashboard') }}">Mi dashboard</a>
+        <a href="{{ url_for('profile.editando') }}">Buscar Candidatos</a>
+        <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">Ir a Zajuna</a>
+        <a href="{{ url_for('main.logout') }}">Cerrar sesión</a>
+        <button class="btn" onclick="window.location.href='{{ url_for('profile.edit_profile') }}'">Editar perfil</button>
       </nav>
     </header>
 
@@ -60,6 +56,20 @@
             {% if notification.questions %}
               <div class="pregunta">
                 <p><strong>Pregunta:</strong> {{ notification.questions }}</p>
+              </div>
+            {% endif %}
+
+            <!-- Mostrar los mensajes asociados a la notificación -->
+            {% if notification.messages %}
+              <div class="mensajes">
+                <h4>Respuestas recibidas:</h4>
+                <ul>
+                  {% for message in notification.messages %}
+                    <li>
+                      <p><strong>{{ message.sender_id }}:</strong> {{ message.content }} - {{ message.timestamp }}</p>
+                    </li>
+                  {% endfor %}
+                </ul>
               </div>
             {% endif %}
 

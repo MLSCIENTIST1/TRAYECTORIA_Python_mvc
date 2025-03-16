@@ -17,6 +17,14 @@ body {
     background-position: center;
 }
 
+.fecha {
+    padding-right: 20px; /* Espaciado entre las fechas */
+  }
+
+  .calificacion {
+    padding-left: 20px; /* Espaciado entre las fechas y calificaciones */
+  }
+
 header {
     position: fixed;
     top: 0;

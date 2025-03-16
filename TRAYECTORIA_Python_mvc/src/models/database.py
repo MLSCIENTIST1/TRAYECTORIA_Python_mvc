@@ -34,6 +34,8 @@ except Exception as e:
 # Crear la base de datos si no existe
 def create_database():
     print("Conectando a la base de datos postgres...")
+    conn = None
+    cur = None
     try:
         conn = psycopg2.connect(
             dbname='postgres',
@@ -53,8 +55,10 @@ def create_database():
     except Exception as e:
         print(f"Error al crear la base de datos: {e}", file=sys.stderr)
     finally:
-        cur.close()
-        conn.close()
+        if cur is not None:
+            cur.close()
+        if conn is not None:
+            conn.close()
 
 # Inicializar la aplicación
 def init_app(app):

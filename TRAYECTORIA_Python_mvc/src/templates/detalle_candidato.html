@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/c4d33f5660.js" crossorigin="anonymous"></script>
-    <title>Usuario Logueadoo</title>
+    <title>Usuario Logueado</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script>
       // Mensaje para confirmar que el script está funcionando
@@ -64,6 +64,10 @@
 
       <!-- Formulario de contratación -->
       <form id="contratarForm" action="{{ url_for('notifications.notifications', candidato_id=usuario.id_usuario) }}" method="POST">
+        <div class="contenedor-input">
+          <label for="mensaje"><strong>Mensaje:</strong></label>
+          <textarea id="mensaje" name="mensaje" rows="4" cols="50" placeholder=></textarea>
+        </div>
         <button type="submit" class="btn">Contratar</button>
       </form>
 
