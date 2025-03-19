@@ -15,7 +15,7 @@
     </header>
 
     <main>
-        <h1>Mis Contratos Vigentes</h1>
+        <h1>Contratos Vigentes como {{ 'Contratante' if role == 'contratante' else 'Contratado' }}</h1>
 
         {% if contracts %}
             <table>
@@ -23,36 +23,30 @@
                     <tr>
                         <th>ID Contrato</th>
                         <th>Nombre</th>
-                        <th class="fecha">Fecha Inicio</th>
-                        <th class="fecha"> Fecha Fin</th> </th>
-                        <th class="fecha"></th>Aquí puedes realizar la calificacion de tus contratos actuales; Para una comunidad mas transparente trata de ser muy objetivo. La calificación se hace en 3 etapas: en los primeros dias, a mitad y una calificacion final.</th>
-                        
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Acciones</th>
                     </tr>
-                    
                 </thead>
-                <br>
                 <tbody>
                     {% for contract in contracts %}
                         <tr>
-                            <td >{{ contract.id_servicio }}</td>
-                            <td class="fecha">{{ contract.nombre_servicio }}</td>
-                            <td class="fecha"> {{ contract.fecha_inicio }}</td>
-                            <td class="fecha">{{ contract.fecha_fin   }}</td>
-                            
+                            <td>{{ contract.id_servicio }}</td>
+                            <td>{{ contract.nombre_servicio }}</td>
+                            <td>{{ contract.fecha_inicio }}</td>
+                            <td>{{ contract.fecha_fin }}</td>
                             <td>
-                                <form action="{{ url_for('calificar.rate_contratante', servicio_id=contract.id_servicio) }}" method="POST">
-                                    <button type="submit" class="btn">Ir a calificar</button>
+                                <form action="{{ url_for('calificar.show_calificar', servicio_id=contract.id_servicio) }}" method="GET">
+                                    <button type="submit" class="btn">Ir a calificar a {{ contract.person_to_rate }}</button>
                                 </form>
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
-                <br>
             </table>
         {% else %}
-            <p>No tienes contratos vigentes en este momento.</p>
+            <p>No tienes contratos vigentes como {{ 'contratante' if role == 'contratante' else 'contratado' }}.</p>
         {% endif %}
     </main>
-    <br>
 </body>
 </html>

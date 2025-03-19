@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, BigInteger
+from sqlalchemy import Column, Integer, String, BigInteger, Boolean
 from sqlalchemy.orm import relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 from src.models.database import db
@@ -18,6 +18,7 @@ class Usuario(db.Model, UserMixin):
     cedula = Column(BigInteger, nullable=False, unique=True)
     celular = Column(BigInteger, nullable=False)
     ciudad = Column(String, nullable=False)
+    active = Column(Boolean, default = True)
 
     # Relaciones con Notification
     received_notifications = relationship("Notification", foreign_keys='Notification.user_id', back_populates='receiver')

@@ -36,7 +36,12 @@
                 {{ form.submit(class_='btn') }}
             </div>
         </form>
-        <a href="{{ url_for('profile.editando') }}">Volver</a>
+        <a href="{{ url_for('profile.editando') }}">Volver</a><br><br>
+
+        <form action="{{url_for('profile.logic_delete_user')}}" method="POST">
+            <button type="submit" class="btn-danger">Solicitar darme de baja en la plataforma</button>
+        </form>
     </div>
+    
 </body>
 </html>

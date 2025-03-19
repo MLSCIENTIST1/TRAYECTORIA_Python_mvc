@@ -4,6 +4,8 @@ from .servicio import Servicio
 from .message import Message
 from .usuarios import Usuario
 from .calificacion import Calificacion 
+from .aditional_services import AditionalService
+
 
 from src.models.database import db, init_app, create_database, DATABASE_URL
 

@@ -117,7 +117,9 @@ def create_service_from_notification(notification):
             fecha_inicio=datetime.utcnow().date(),
             fecha_fin=(datetime.utcnow().replace(year=datetime.utcnow().year + 1)).date(),
             nombre_contratante=sender.nombre,  # Ahora se usa el nombre del remitente
-            id_contratante=sender.id_usuario   # Ahora se usa el ID del remitente
+            id_contratante=sender.id_usuario,
+            id_usuario=current_user.id_usuario
+            
         )
         logger.debug(f"Servicio a guardar: {servicio}")
         

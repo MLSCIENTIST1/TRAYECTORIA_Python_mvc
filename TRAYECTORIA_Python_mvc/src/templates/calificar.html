@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Contratos Vigentes</title>
+    <title>Calificar</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -15,69 +15,50 @@
     </header>
 
     <main>
-        <h1>Mis Contratos Vigentes</h1>
+        <h1>Calificación del Contrato ID {{ contracts[0].id_servicio }}</h1>
 
-        {% if contracts %}
-            <table>
-                <thead>
-                    
-                    <tr>
-                        <p colspan="2">Aquí puedes realizar la calificación de tus contratos actuales; para una comunidad más transparente trata de ser muy objetivo. La calificación se hace en 3 etapas: en los primeros días, a mitad y una calificación final.</p><br>
-                    </tr><br>
-                    <tr>
-                        <th>ID Contrato</th>
-                        <th>Calificar</th>
-                    </tr>
-                </thead>
-                <br>
-                <tbody>
-                    {% for contract in contracts %}
-                        <tr>
-                            <td >{{ contract.id_servicio }}</td>
-                            
-                            
-                            <td>
-                                {% if contract.id_contratante == current_user.id_usuario %}
-                                <form action="{{ url_for('calificar.rate_contratante', servicio_id=contract.id_servicio) }}" method="POST">
-                                    <label for="cal_contratante1">Primera etapa   :</label>
-                                    <input type="number" name="cal_contratante1" min="1" max="10" required>
+        <!-- Texto dinámico según el rol -->
+        <p>
+            Aquí puedes calificar a 
+            <strong>{{ contracts[0].contratado.nombre if contracts[0].id_contratante == current_user.id_usuario else contracts[0].contratante.nombre }}</strong>, 
+            {{ 'a quien contrataste' if contracts[0].id_contratante == current_user.id_usuario else 'quien te contrató' }} 
+            para el cargo "<strong>{{ contracts[0].nombre_servicio }}</strong>". 
+            Por favor, realiza una calificación objetiva y transparente, considerando las tres etapas: 
+            al inicio, a la mitad y al finalizar el contrato.
 
-                                    <label for="cal_contratante2">Segunda etapa     :</label>
-                                    <input type="number" name="cal_contratante2" min="1" max="10" required>
+            El algoritmo de Trayectoria está disñado de tal forma que tus calificaciones sean afectadas si eres o no objetivo.
+        </p><br><br>
 
-                                    <label for="cal_contratante3">Etapa final     :</label>
-                                    <input type="number" name="cal_contratante3" min="1" max="10" required><br><br>
+        <!-- Formulario de calificación -->
+        <form action="{{ url_for('calificar.rate_contratante' if contracts[0].id_contratante == current_user.id_usuario else 'calificar.rate_contratado', servicio_id=contracts[0].id_servicio) }}" method="POST">
+            {% if contracts[0].id_contratante == current_user.id_usuario %}
+                <label for="cal_contratante1">Primera etapa:</label>
+                <input type="number" name="cal_contratante1" min="1" max="10" required><br>
 
-                                    
-                                    <label for="comentario_contratante">Comentario final:</label><br>
-                                    <textarea name="comentario_contratante" rows="3" placeholder="Escribe tu comentario aquí..."></textarea><br><br>
-                                    <button type="submit" class="btn">Guardar Calificación</button>
-                                    
-                                </form><br>
-                                {% elif contract.id_contratado == current_user.id_usuario %}
-                                
-                                <form action="{{ url_for('calificar.rate_contratado', servicio_id=contract.id_servicio) }}" method="POST">
-                                    <label for="cal_contratado1">Inicio:</label>
-                                    <input type="number" name="cal_contratado1" min="1" max="10" required>
-                                    <label for="cal_contratado2">Mitad:</label>
-                                    <input type="number" name="cal_contratado2" min="1" max="10" required>
-                                    <label for="cal_contratado3">Final:</label>
-                                    <input type="number" name="cal_contratado3" min="1" max="10" required><br><br>
-                                    <label for="comentario_contratado">Comentario final:</label><br>
-                                    <textarea name="comentario_contratado" rows="3" placeholder="Escribe tu comentario aquí..."></textarea><br><br>
-                                    <button type="submit" class="btn">Guardar Calificación</button>
-                                    
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-                <br>
-            </table>
-        {% else %}
-            <p>No tienes contratos vigentes en este momento.</p>
-        {% endif %}
+                <label for="cal_contratante2">Segunda etapa:</label>
+                <input type="number" name="cal_contratante2" min="1" max="10" required><br>
+
+                <label for="cal_contratante3">Etapa final:</label>
+                <input type="number" name="cal_contratante3" min="1" max="10" required><br><br>
+
+                <label for="comentario_contratante">Comentario final:</label><br>
+                <textarea name="comentario_contratante" rows="3" placeholder="Escribe tu comentario aquí..."></textarea><br><br>
+                <button type="submit" class="btn">Guardar Calificación</button>
+            {% elif contracts[0].id_contratado == current_user.id_usuario %}
+                <label for="cal_contratado1">Inicio:</label>
+                <input type="number" name="cal_contratado1" min="1" max="10" required><br>
+
+                <label for="cal_contratado2">Mitad:</label>
+                <input type="number" name="cal_contratado2" min="1" max="10" required><br>
+
+                <label for="cal_contratado3">Final:</label>
+                <input type="number" name="cal_contratado3" min="1" max="10" required><br><br>
+
+                <label for="comentario_contratado">Comentario final:</label><br>
+                <textarea name="comentario_contratado" rows="3" placeholder="Escribe tu comentario aquí..."></textarea><br><br>
+                <button type="submit" class="btn">Guardar Calificación</button>
+            {% endif %}
+        </form>
     </main>
-    <br>
 </body>
 </html>

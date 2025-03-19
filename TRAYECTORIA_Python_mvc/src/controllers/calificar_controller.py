@@ -19,18 +19,26 @@ logger.addHandler(ch)
 # Crear Blueprint para la funcionalidad de calificación
 calificar = Blueprint('calificar', __name__)
 
-@calificar.route('/calificar', methods=['GET'])
-def show_calificar():
-    # Obtener contratos vigentes donde el usuario es contratante o contratado
-    contracts = Servicio.query.filter(
-        or_(
-            Servicio.id_contratante == current_user.id_usuario,
-            Servicio.id_contratado == current_user.id_usuario
-        )
-    ).all()
+@calificar.route('/calificar/<int:servicio_id>', methods=['GET'])
+def show_calificar(servicio_id):
+    try:
+        # Obtener el contrato específico basado en el servicio_id
+        contrato = Servicio.query.get_or_404(servicio_id)
 
-    logger.debug(f"Contratos vigentes para el usuario {current_user.id_usuario}: {[c.id_servicio for c in contracts]}")
-    return render_template('calificar.html', contracts=contracts)
+        # Validar que el usuario esté relacionado con el contrato
+        if contrato.id_contratante != current_user.id_usuario and contrato.id_contratado != current_user.id_usuario:
+            flash("No tienes acceso a este contrato.", "error")
+            return redirect(url_for('dashboard.dashboard'))
+
+        # Log de depuración
+        logger.debug(f"Contrato cargado para calificar: ID Servicio {contrato.id_servicio}, Contratante {contrato.id_contratante}, Contratado {contrato.id_contratado}")
+
+        # Pasar solo el contrato seleccionado al HTML
+        return render_template('calificar.html', contracts=[contrato])  # Enviamos una lista con un único contrato
+    except Exception as e:
+        logger.exception("Error al cargar el contrato para calificar.")
+        flash("Hubo un problema al cargar el contrato.", "error")
+        return redirect(url_for('dashboard.dashboard'))
 
 
 @calificar.route('/rate_contratante/<int:servicio_id>', methods=['POST'])

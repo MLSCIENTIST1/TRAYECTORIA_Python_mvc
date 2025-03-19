@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Date, ForeignKey,String, Boolean
 from sqlalchemy.orm import relationship
 from src.models.usuario_servicio import usuario_servicio  # Se importa la tabla intermedia
 from src.models.database import db
@@ -14,6 +14,10 @@ class Servicio(db.Model):
     fecha_inicio = Column(Date, nullable=False)
     fecha_fin = Column(Date, nullable=False)
     nombre_contratante = Column(String, nullable=False)
+    aditional_service = Column(String(234), nullable=True)
+    service_active= Column(Boolean, default = True)
+
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id_usuario'), nullable=False)
     id_contratante = Column(Integer, ForeignKey('usuario.id_usuario'), nullable=False)
     id_contratado = Column(Integer, ForeignKey('usuario.id_usuario'), nullable=True)  # Nuevo campo
 
@@ -24,14 +28,7 @@ class Servicio(db.Model):
     usuarios = relationship("Usuario", secondary=usuario_servicio, back_populates="servicios")
     calificaciones = db.relationship("Calificacion", back_populates="servicio")
 
-    def __init__(self, nombre_servicio, fecha_solicitud, fecha_aceptacion, fecha_inicio, fecha_fin, nombre_contratante, id_contratante):
-        self.nombre_servicio = nombre_servicio
-        self.fecha_solicitud = fecha_solicitud
-        self.fecha_aceptacion = fecha_aceptacion
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
-        self.nombre_contratante = nombre_contratante
-        self.id_contratante = id_contratante
+    
 
     # CRUD
     @classmethod
