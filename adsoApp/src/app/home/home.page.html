@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registrar Servicio</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="sendService()">
+    <!-- Nombre del servicio -->
+    <ion-item>
+      <ion-label position="floating">Nombre del Servicio</ion-label>
+      <ion-input [(ngModel)]="serviceData.nombre_servicio" name="nombre_servicio" required></ion-input>
+    </ion-item>
+
+    <!-- Fecha de solicitud -->
+    <ion-item>
+      <ion-label position="floating">Fecha de Solicitud</ion-label>
+      <ion-input [(ngModel)]="serviceData.fecha_solicitud" name="fecha_solicitud" type="date" required></ion-input>
+    </ion-item>
+
+    <!-- Fecha de aceptación -->
+    <ion-item>
+      <ion-label position="floating">Fecha de Aceptación</ion-label>
+      <ion-input [(ngModel)]="serviceData.fecha_aceptacion" name="fecha_aceptacion" type="date" required></ion-input>
+    </ion-item>
+
+    <!-- Fecha de inicio -->
+    <ion-item>
+      <ion-label position="floating">Fecha de Inicio</ion-label>
+      <ion-input [(ngModel)]="serviceData.fecha_inicio" name="fecha_inicio" type="date" required></ion-input>
+    </ion-item>
+
+    <!-- Fecha de fin -->
+    <ion-item>
+      <ion-label position="floating">Fecha de Fin</ion-label>
+      <ion-input [(ngModel)]="serviceData.fecha_fin" name="fecha_fin" type="date" required></ion-input>
+    </ion-item>
+
+    <!-- Nombre del contratante -->
+    <ion-item>
+      <ion-label position="floating">Nombre del Contratante</ion-label>
+      <ion-input [(ngModel)]="serviceData.nombre_contratante" name="nombre_contratante" required></ion-input>
+    </ion-item>
+
+    <!-- ID del contratante -->
+    <ion-item>
+      <ion-label position="floating">ID del Contratante</ion-label>
+      <ion-input [(ngModel)]="serviceData.id_contratante" name="id_contratante" type="number" required></ion-input>
+    </ion-item>
+
+    <!-- ID del usuario -->
+    <ion-item>
+      <ion-label position="floating">ID del Usuario</ion-label>
+      <ion-input [(ngModel)]="serviceData.id_usuario" name="id_usuario" type="number" required></ion-input>
+    </ion-item>
+
+    <!-- Botón para enviar -->
+    <ion-button type="submit" expand="block">Registrar Servicio</ion-button>
+  </form>
+</ion-content>

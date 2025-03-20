@@ -1,0 +1,7 @@
+{
+  "name": "adsoApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
