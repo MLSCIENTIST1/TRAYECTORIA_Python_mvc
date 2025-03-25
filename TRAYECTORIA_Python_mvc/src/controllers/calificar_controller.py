@@ -38,7 +38,7 @@ def show_calificar(servicio_id):
     except Exception as e:
         logger.exception("Error al cargar el contrato para calificar.")
         flash("Hubo un problema al cargar el contrato.", "error")
-        return redirect(url_for('dashboard.dashboard'))
+        return redirect(url_for('dashboard.dashboard')) 
 
 
 @calificar.route('/rate_contratante/<int:servicio_id>', methods=['POST'])

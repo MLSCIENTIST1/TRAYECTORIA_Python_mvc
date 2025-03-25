@@ -10,6 +10,7 @@
 <body>
     <header>
         <h2 class="logo">TRAYECTORIA</h2>
+        <button class="toggle-nav-btn" onclick="toggleNav()">☰</button>
         
         <nav class="navegacion">
             <a href="{{url_for("main.index")}}">Inicio</a>
@@ -19,146 +20,109 @@
             <button class="btn" onclick="mostrarLogin()">Iniciar Sesión</button>
         </nav>
     </header>
-    <div >
-        
-    
-        <p>   ...</p>
+
+    <div>
+        <p>...</p>
     </div>
-    
-    <div class="fondo  " id="loginFondo">
-        
-        
-        
-        <p class="contenedor-login">
-            <h4>Terminos y condiciones. </h4>
-            <p>Al usar la aplicación Trayectoria, el usuario acepta que puede recibir reportes negativos y, en algunos casos, críticas fuertes en relación con su desempeño en distintos roles, tales como empleado, prestador de servicios independiente, contratante, dueño de negocio, servidor público, entre otros que puedan ser registrados en la plataforma. Estas evaluaciones buscan promover el crecimiento y la mejora continua en su labor profesional. Asimismo, el usuario acepta que, si decide eliminar su registro en Trayectoria, sus datos permanecerán visibles durante un periodo de 6 meses posteriores a la solicitud de baja, permitiendo una transición adecuada de la información en la plataforma.
+
+    <div class="fondo" id="loginFondo">
+        <div class="titulo-terminos">Términos y Condiciones</div>
+        <div class="fondo terminos">
+            <p>
+                Al usar la aplicación Trayectoria, el usuario acepta que puede recibir reportes negativos
+                y, en algunos casos, críticas fuertes en relación con su desempeño en distintos roles,
+                tales como empleado, prestador de servicios independiente, contratante, dueño de negocio,
+                servidor público, entre otros que puedan ser registrados en la plataforma. Estas evaluaciones
+                buscan promover el crecimiento y la mejora continua en su labor profesional. Asimismo,
+                el usuario acepta que, si decide eliminar su registro en Trayectoria, sus datos permanecerán
+                visibles durante un periodo de 6 meses posteriores a la solicitud de baja, permitiendo
+                una transición adecuada de la información en la plataforma.
             </p>
-        
-        </p>
-        
-    
-        
+        </div>
     </div>
-    <main >
-        
-        <div class="fondo " id="loginFondo">
-            <span>
-        <!-- Formulario de Registro -->
-     <div class="contenedor-form.registrar ">
-        <form method="POST" action="{{ url_for('register.register') }}"><br>
-            <h3>Registro de Nuevo Usuario  </h3>
-            {{ form.hidden_tag() }} <!-- Necesario para el CSRF Token -->
-            <div class="contenedor-input "></div>
-            <!-- Nombre -->
-            <label for="nombre" >Nombre: </label>
-            {{ form.nombre(class="input-field") }}
-            {% if form.nombre.errors %}
-                <ul class="error-messages">
-                    {% for error in form.nombre.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul><br>
-            {% endif %}
-        
-        </span>
-        <div class="contenedor-input "></div>
-            <!-- Apellidos -->
-            <label for="Apellidos" >Apellidos:</label>
-            {{ form.apellidos(class="input-field") }}
-            {% if form.apellidos.errors %}
-                <ul class="error-messages">
-                    {% for error in form.apellidos.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            
 
-            <div class="contenedor-input "></div>
-            <!-- Cedula -->
-            <label for="Cedula" class=" contenedor-input">cedula:</label>
-            {{ form.cedula(class="input-field") }}
-            {% if form.cedula.errors %}
-                <ul class="error-messages">
-                    {% for error in form.cedula.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+    <main>
+        <div class="fondo" id="loginFondo">
+            <!-- Título fuera del recuadro -->
+            <div class="titulo-form">
+                <h3>Registro de Nuevo Usuario</h3>
+            </div>
 
-            <div class="contenedor-input "></div>
-            <!-- Correo -->
-            <label for="correo"class=" contenedor-input">Correo:</label>
-            {{ form.correo(class="input-field") }}
-            {% if form.correo.errors %}
-                <ul class="error-messages">
-                    {% for error in form.correo.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            <div class="contenedor-input "></div>
-            <!-- Contraseña -->
-            <label for="contrasenia"class=" contenedor-input">Contraseña:</label>
-            {{ form.contrasenia(class="input-field") }}
-            {% if form.contrasenia.errors %}
-                <ul class="error-messages">
-                    {% for error in form.contrasenia.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+            <!-- Recuadro que contiene el formulario -->
+            <div class="fondo botones">
+                <form method="POST" action="{{ url_for('register.register') }}">
+                    {{ form.hidden_tag() }}
 
-            <div class="contenedor-input "></div>
+                    <div class="fila">
+                        <div class="contenedor-input">
+                            <label for="nombre">Nombre:</label>
+                            {{ form.nombre(class="input-field") }}
+                        </div>
+                        <div class="contenedor-input">
+                            <label for="apellidos">Apellidos:</label>
+                            {{ form.apellidos(class="input-field") }}
+                        </div>
+                    </div>
 
-            <!-- Labor -->
-            <label for="labor"class=" contenedor-input">Labor:</label>
-            {{ form.labor(class="input-field") }}
-            {% if form.labor.errors %}
-                <ul class="error-messages">
-                    {% for error in form.labor.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+                    <div class="fila">
+                        <div class="contenedor-input">
+                            <label for="cedula">Cédula:</label>
+                            {{ form.cedula(class="input-field") }}
+                        </div>
+                        <div class="contenedor-input">
+                            <label for="correo">Correo:</label>
+                            {{ form.correo(class="input-field") }}
+                        </div>
+                    </div>
 
-            <div class="contenedor-input "></div>
+                    <div class="fila">
+                        <div class="contenedor-input">
+                            <label for="contrasenia">Contraseña:</label>
+                            {{ form.contrasenia(class="input-field") }}
+                        </div>
+                        <div class="contenedor-input">
+                            <label for="labor">¿Cuál es tu especialidad o actividad a desarrollar?:</label>
+                            {{ form.labor(class="input-field") }}
+                        </div>
+                    </div>
 
-            <!-- Celular -->
-            <label for="celular"class=" contenedor-input">Celular:</label>
-            {{ form.celular(class="input-field") }}
-            {% if form.celular.errors %}
-                <ul class="error-messages">
-                    {% for error in form.celular.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+                    <div class="fila">
+                        <div class="contenedor-input">
+                            <label for="celular">Celular:</label>
+                            {{ form.celular(class="input-field") }}
+                        </div>
+                        <div class="contenedor-input">
+                            <label for="ciudad">Ciudad:</label>
+                            {{ form.ciudad(class="input-field") }}
+                        </div>
+                    </div>
 
-            <div class="contenedor-input "></div>
-
-            <!-- Ciudad -->
-            <label for="ciudad">Ciudad:</label>
-            {{ form.ciudad(class="input-field") }}
-            {% if form.ciudad.errors %}
-                <ul class="error-messages">
-                    {% for error in form.ciudad.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            <div class="contenedor-form login"></div>
-            <!-- Botón de Envío -->
-            <button type="submit" class="registrar btn ">Registrarse</button>
-        </form>
-    </div>
-        
+                    <!-- Botón colocado al final del recuadro -->
+                    <button type="submit" class="btn">Registrarse</button>
+                </form>
+            </div>
+        </div>
     </main>
 
     <script>
         function mostrarLogin() {
             document.getElementById('loginFondo').classList.add('active');
         }
+        function cerrarLogin() {
+            document.getElementById('loginFondo').classList.remove('active');
+        }
+    </script>
+    <script>
+        // Función para mostrar/ocultar la barra de navegación
+        function toggleNav() {
+            const nav = document.querySelector('.navegacion');
+            nav.classList.toggle('hide');
+        }
+
+        function mostrarLogin() {
+            document.getElementById('loginFondo').classList.add('active');
+        }
+
         function cerrarLogin() {
             document.getElementById('loginFondo').classList.remove('active');
         }

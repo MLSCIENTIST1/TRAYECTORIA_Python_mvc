@@ -7,6 +7,12 @@ from src.models.database import db
 from sqlalchemy import or_, and_
 from src.models.aditional_services import AditionalService
 
+
+UPLOAD_FOLDER = 'static/uploads/'
+ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_AUDIO_EXTENSIONS = {'mp3', 'wav'}
+ALLOWED_VIDEO_EXTENSIONS = {'mp4', 'mov'}
+
 # Configuración del logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -29,6 +35,13 @@ def calcular_total_servicios():
     return total_services
 
 dashboard_bp = Blueprint('dashboard', __name__)
+
+def allowed_file(filename, allowed_extensions):
+    """
+    Verifica si el archivo tiene una extensión permitida
+    """
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
+
 
 @dashboard_bp.route('/dashboard')
 
@@ -263,19 +276,53 @@ def new_service_page():
                 return redirect(url_for('dashboard.new_service_page'))
 
             # Crear el nuevo servicio
-            nuevo_servicio = AditionalService(
+            nuevo_servicio = Servicio(
                 id_usuario=current_user.id_usuario,
                 nombre_servicio=nombre_servicio,
                 descripcion=descripcion,
                 categoria=categoria,
                 precio=float(precio) if precio else None
             )
-
-            # Guardar en la base de datos
             db.session.add(nuevo_servicio)
             db.session.commit()
 
-            flash("Servicio agregado exitosamente.", "success")
+            # Crear las etapas
+            for etapa_nombre in ['Inicial', 'Media', 'Final']:
+                etapa = Etapa(nombre=etapa_nombre, servicio_id=nuevo_servicio.id_servicio)
+                db.session.add(etapa)
+                db.session.commit()
+
+                # Manejo de fotos de la etapa
+                if f'{etapa_nombre.lower()}_fotos' in request.files:
+                    fotos = request.files.getlist(f'{etapa_nombre.lower()}_fotos')
+                    for foto in fotos:
+                        if foto and allowed_file(foto.filename, ALLOWED_IMAGE_EXTENSIONS):
+                            filename = secure_filename(foto.filename)
+                            foto.save(os.path.join(UPLOAD_FOLDER, filename))
+                            nueva_foto = Foto(url=os.path.join(UPLOAD_FOLDER, filename), etapa_id=etapa.id_etapa)
+                            db.session.add(nueva_foto)
+
+                # Manejo de audio de la etapa
+                if f'{etapa_nombre.lower()}_audio' in request.files:
+                    audio = request.files[f'{etapa_nombre.lower()}_audio']
+                    if audio and allowed_file(audio.filename, ALLOWED_AUDIO_EXTENSIONS):
+                        filename = secure_filename(audio.filename)
+                        audio.save(os.path.join(UPLOAD_FOLDER, filename))
+                        nuevo_audio = Audio(url=os.path.join(UPLOAD_FOLDER, filename), etapa_id=etapa.id_etapa)
+                        db.session.add(nuevo_audio)
+
+                # Manejo de videos de la etapa
+                if f'{etapa_nombre.lower()}_videos' in request.files:
+                    videos = request.files.getlist(f'{etapa_nombre.lower()}_videos')
+                    for video in videos:
+                        if video and allowed_file(video.filename, ALLOWED_VIDEO_EXTENSIONS):
+                            filename = secure_filename(video.filename)
+                            video.save(os.path.join(UPLOAD_FOLDER, filename))
+                            nuevo_video = Video(url=os.path.join(UPLOAD_FOLDER, filename), etapa_id=etapa.id_etapa)
+                            db.session.add(nuevo_video)
+
+            db.session.commit()
+            flash("Servicio agregado exitosamente con todas las referencias.", "success")
             return redirect(url_for('dashboard.dashboard'))
 
         except Exception as e:

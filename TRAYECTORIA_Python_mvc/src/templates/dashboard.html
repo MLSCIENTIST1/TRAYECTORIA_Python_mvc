@@ -11,6 +11,7 @@
     <header>
         <h2 class="logo">TRAYECTORIA</h2>
         <h4>{{current_user.nombre|upper}}</h4>
+        <button class="toggle-nav-btn" onclick="toggleNav()">☰</button>
         <nav class="navegacion">
             <a href="{{ url_for('main.index') }}">Inicio</a>
             <a href="{{ url_for('recive.show_notifications') }}">Notificaciones</a>
@@ -113,6 +114,21 @@ Contratos como contratado: {{ contract_count_contratado }}
     <script>
         function mostrarLogin() {
             document.getElementById('loginFondo').classList.toggle('activo');
+        }
+    </script>
+    <script>
+        // Función para mostrar/ocultar la barra de navegación
+        function toggleNav() {
+            const nav = document.querySelector('.navegacion');
+            nav.classList.toggle('hide');
+        }
+
+        function mostrarLogin() {
+            document.getElementById('loginFondo').classList.add('active');
+        }
+
+        function cerrarLogin() {
+            document.getElementById('loginFondo').classList.remove('active');
         }
     </script>
 </body>

@@ -8,6 +8,7 @@
 <body>
     <header>
         <h2 class="logo">TRAYECTORIA</h2>
+        <button class="toggle-nav-btn" onclick="toggleNav()">☰</button>
         <nav class="navegacion">
             <a href="{{ url_for('dashboard.dashboard') }}">Regresar al Dashboard</a>
             <a href="{{ url_for('main.logout') }}">Cerrar Sesión</a>
@@ -59,6 +60,21 @@
                 <button type="submit" class="btn">Guardar Calificación</button>
             {% endif %}
         </form>
+        <script>
+            // Función para mostrar/ocultar la barra de navegación
+            function toggleNav() {
+                const nav = document.querySelector('.navegacion');
+                nav.classList.toggle('hide');
+            }
+    
+            function mostrarLogin() {
+                document.getElementById('loginFondo').classList.add('active');
+            }
+    
+            function cerrarLogin() {
+                document.getElementById('loginFondo').classList.remove('active');
+            }
+        </script>
     </main>
 </body>
 </html>

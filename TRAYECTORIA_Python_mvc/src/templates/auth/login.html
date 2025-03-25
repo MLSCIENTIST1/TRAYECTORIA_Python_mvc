@@ -10,13 +10,16 @@
 <body>
     <header>
         <h2 class="logo">TRAYECTORIA</h2>
+
+        <!-- Botón para mostrar/ocultar la barra de navegación en móviles -->
+        <button class="toggle-nav-btn" onclick="toggleNav()">☰</button>
+
         <nav class="navegacion">
             <a href="{{ url_for('main.index') }}">Inicio</a>
             <a href="#">Feedbacks</a>
             <a href="#">Calificaciones Recibidas</a>
             <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">Ir a Zajuna</a>
-            <button class="btn" onclick="window.location.href='{{ url_for('profile.edit_profile') }}'">Editar perfil</button>
-
+            <button class="btn" onclick="window.location.href='{{ url_for('profile.edit_profile') }}'">(PAC)</button>
         </nav>
     </header>
 
@@ -76,6 +79,12 @@
     </div>
 
     <script>
+        // Función para mostrar/ocultar la barra de navegación
+        function toggleNav() {
+            const nav = document.querySelector('.navegacion');
+            nav.classList.toggle('hide');
+        }
+
         function mostrarLogin() {
             document.getElementById('loginFondo').classList.add('active');
         }

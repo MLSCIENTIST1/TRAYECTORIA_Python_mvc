@@ -9,6 +9,7 @@
 <body>
     <header>
         <h2 class="logo">TRAYECTORIA</h2>
+        <button class="toggle-nav-btn" onclick="toggleNav()">☰</button>
         <nav class="navegacion">
             <a href="{{ url_for('main.index') }}">Inicio</a>
             <a href="{{ url_for('recive.show_notifications') }}">Notificaciones</a>
@@ -19,22 +20,46 @@
 
     <div class="contenedor">
         <h1>Ofertar Nuevo Servicio</h1>
-        <form action="{{ url_for('dashboard.new_service_page') }}" method="POST">
-            <label for="nombre_servicio">Nombre del Servicio:</label>
-            <input type="text" id="nombre_servicio" name="nombre_servicio" required>
+        <div class="btn">
+            <form action="{{ url_for('dashboard.create_service') }}" method="POST" enctype="multipart/form-data">
+                <label for="nombre_servicio">Nombre del Servicio:</label>
+                <input type="text" id="nombre_servicio" name="nombre_servicio" required>
             
-            <label for="descripcion">Descripción:</label>
-            <textarea id="descripcion" name="descripcion"></textarea>
+                <label for="descripcion">Descripción del Servicio:</label>
+                <textarea id="descripcion" name="descripcion"></textarea>
             
-            <label for="categoria">Categoría:</label>
-            <input type="text" id="categoria" name="categoria">
+                {% for etapa in ['inicial', 'media', 'final'] %}
+                    <h3>Etapa {{ etapa|capitalize }}</h3>
+                    
+                    <label for="{{ etapa }}_fotos">Fotos:</label>
+                    <input type="file" id="{{ etapa }}_fotos" name="{{ etapa }}_fotos" multiple accept="image/*">
+                    
+                    <label for="{{ etapa }}_audio">Audio:</label>
+                    <input type="file" id="{{ etapa }}_audio" name="{{ etapa }}_audio" accept="audio/*">
+                    
+                    <label for="{{ etapa }}_videos">Videos:</label>
+                    <input type="file" id="{{ etapa }}_videos" name="{{ etapa }}_videos" multiple accept="video/*">
+                {% endfor %}
             
-            <label for="precio">Precio:</label>
-            <input type="number" id="precio" name="precio" step="0.01" min="0">
-
-            <button type="submit" class="btn">Agregar Servicio</button>
-        </form>
+                <button type="submit">Crear Servicio</button>
+            </form>
+        </div>
         <a href="{{ url_for('dashboard.dashboard') }}">Cancelar</a>
     </div>
+    <script>
+        // Función para mostrar/ocultar la barra de navegación
+        function toggleNav() {
+            const nav = document.querySelector('.navegacion');
+            nav.classList.toggle('hide');
+        }
+
+        function mostrarLogin() {
+            document.getElementById('loginFondo').classList.add('active');
+        }
+
+        function cerrarLogin() {
+            document.getElementById('loginFondo').classList.remove('active');
+        }
+    </script>
 </body>
 </html>

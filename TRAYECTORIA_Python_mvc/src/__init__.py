@@ -12,8 +12,9 @@ from src.controllers.send_controller import notifications_bp
 from src.controllers.recive_notifications import recive_notifications_bp
 from src.controllers.dashboard_controller import dashboard_bp
 from src.controllers.calificar_controller import calificar
-
-"""from src.controllers.recive_notifications import detail_request_bp"""
+from flask_cors import CORS
+from flask_restful import Api
+from src.api.register_api import CreateServiceAPI
 
 from src.models.usuarios import Usuario
 
@@ -31,6 +32,8 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
+
+
 
 class Config:
     SECRET_KEY = 'tu_clave_secreta_segura'
@@ -80,11 +83,23 @@ def create_app():
     app.register_blueprint(recive_notifications_bp, url_prefix='/recive')   
     app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
     app.register_blueprint(calificar, url_prefix='/calificar')
-    """app.register_blueprint(detail_request_bp, url_prefix='/detail_request')   """
     logger.info("Blueprints registrados correctamente")
+
+    # Inicializar CORS
+    CORS(app)
+    app.config['CORS_HEADERS'] = 'Content-Type'
+    logger.info("CORS inicializado correctamente")
+
+    # Inicializar Flask-RESTful y registrar recursos
+    api = Api(app)
+    api.add_resource(CreateServiceAPI, '/api/create-service')
+    logger.info("API RESTful inicializada y recurso registrado")
+
+    app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 
     return app
 
+
 if __name__ == '__main__':
     app = create_app()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

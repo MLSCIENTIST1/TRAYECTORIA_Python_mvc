@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+
 * {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -79,16 +81,10 @@ header {
     color: white;
 }
 
-
-
-
-
-
 .fondo .icono-cerrar {
     position: centre;
     right: 0;
     top: 0;
-    /* Corregido */
     background-color: rgba(255, 255, 255, 0.5);
     display: flex;
     justify-content: center;
@@ -105,7 +101,6 @@ header {
     width: 90%;
     padding: 10px;
     padding-left: 40px;
-    
     border-bottom: 4px solid rgb(241, 80, 80);
     background: transparent;
     outline: none;
@@ -168,8 +163,7 @@ header {
 
 .btn {
     width: 100%;
-    height: px;
-   
+    height: auto;
     outline: none;
     border-radius: 5px;
     cursor: pointer;
@@ -189,4 +183,69 @@ header {
 
 .registrar p a:hover {
     text-decoration: underline;
+}
+
+/* Media queries para responsividad */
+
+/* Tablets (pantallas medianas) */
+@media (max-width: 768px) {
+    header {
+        padding: 15px 50px;
+    }
+
+    .logo {
+        font-size: 2.5rem;
+    }
+
+    .navegacion a {
+        font-size: 1rem;
+        margin-left: 20px;
+    }
+
+    .navegacion .btn {
+        width: 100px;
+        height: 40px;
+        font-size: 1rem;
+        margin-left: 20px;
+    }
+}
+
+/* Móviles (pantallas pequeñas) */
+@media (max-width: 480px) {
+    body {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px 20px;
+    }
+
+    .logo {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .navegacion a {
+        font-size: 0.9rem;
+        margin-left: 10px;
+    }
+
+    .navegacion .btn {
+        width: 90px;
+        height: 35px;
+        font-size: 0.9rem;
+        margin-left: 10px;
+    }
+
+    .contenedor-input input {
+        font-size: 0.9rem;
+        padding-left: 30px;
+    }
+
+    .contenedor-input label {
+        font-size: 0.8rem;
+    }
 }

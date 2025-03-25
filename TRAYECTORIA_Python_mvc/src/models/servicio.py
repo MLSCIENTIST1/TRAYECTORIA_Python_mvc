@@ -27,7 +27,8 @@ class Servicio(db.Model):
     # Relación con usuarios
     usuarios = relationship("Usuario", secondary=usuario_servicio, back_populates="servicios")
     calificaciones = db.relationship("Calificacion", back_populates="servicio")
-
+    #Relaciones con media_storage
+    etapas = relationship("Etapa", back_populates="servicio", cascade="all, delete-orphan")
     
 
     # CRUD
