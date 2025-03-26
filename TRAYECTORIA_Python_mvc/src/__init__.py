@@ -17,11 +17,19 @@ from flask_restful import Api
 from src.api.register_api import CreateServiceAPI
 
 from src.models.usuarios import Usuario
+from src.models.etapa import Etapa  # Nuevo modelo
+from src.models.foto import Foto  # Nuevo modelo
+from src.models.audio import Audio  # Nuevo modelo
+from src.models.video import Video  # Nuevo modelo
 
 import os
 import sys
 import logging
 
+# Inicializar la variable global de Flask-Migrate
+migrate = None
+
+# Configuración de logging
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -32,8 +40,6 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-
-
 
 class Config:
     SECRET_KEY = 'tu_clave_secreta_segura'
@@ -56,6 +62,8 @@ def create_app():
     try:
         logger.info("Intentando inicializar la base de datos...")
         init_app(app)
+        global migrate
+        migrate = Migrate(app, db)  # ¡Aquí se inicializa Flask-Migrate correctamente!
         logger.info("Base de datos y migración inicializadas correctamente")
     except Exception as e:
         logger.error(f"Error inicializando la base de datos: {e}", exc_info=True)

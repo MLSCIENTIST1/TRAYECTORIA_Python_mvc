@@ -16,9 +16,10 @@
 
         <nav class="navegacion">
             <a href="{{ url_for('main.index') }}">Inicio</a>
+            <a href="{{ url_for('register.register') }}">Registrarse</a>
             <a href="#">Feedbacks</a>
-            <a href="#">Calificaciones Recibidas</a>
-            <a href="https://zajuna.sena.edu.co/index.php?error=Informaci%C3%B3n%20de%20usuario%20inv%C3%A1lida">Ir a Zajuna</a>
+            
+            <a href="#">Contacto</a>
             <button class="btn" onclick="window.location.href='{{ url_for('profile.edit_profile') }}'">(PAC)</button>
         </nav>
     </header>
