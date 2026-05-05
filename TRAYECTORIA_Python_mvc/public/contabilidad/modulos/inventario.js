@@ -159,16 +159,13 @@ async function cargarCategorias() {
         }
     }
 
-    // Fallback: categorías extraídas de los productos existentes en el inventario
-    if (nombres.length === 0) {
-        try {
-            const rows = document.querySelectorAll('#lista-productos tr[data-categoria]');
-            const fromTable = [...new Set([...rows].map(r => r.dataset.categoria).filter(Boolean))];
-            if (fromTable.length > 0) {
-                nombres = fromTable;
-                console.log('✅ Categorías desde tabla de inventario:', nombres);
-            }
-        } catch (e) {}
+    // Fallback: categorías únicas de los productos ya cargados (window._productosCache)
+    if (nombres.length === 0 && Array.isArray(window._productosCache)) {
+        const fromCache = [...new Set(window._productosCache.map(p => p.categoria).filter(Boolean))];
+        if (fromCache.length > 0) {
+            nombres = fromCache;
+            console.log('✅ Categorías desde caché de productos:', nombres);
+        }
     }
 
     if (nombres.length === 0) nombres = DEFAULTS;
@@ -277,6 +274,7 @@ async function cargarInventario() {
                 return;
             }
 
+            window._productosCache = productosDelNegocio; // usado por cargarCategorias como fallback
             lista.innerHTML = productosDelNegocio.map(p => {
                 const precio = parseFloat(p.precio) || 0;
                 const costo = parseFloat(p.costo) || 0;
