@@ -103,6 +103,99 @@ const DoraIA = (() => {
         });
     }
 
+    // ── Detección de intención de stock ───────────────────────────────────
+    function detectStockIntent(text) {
+        const re = /(?:actualiz[ao]|cambi[ao]|pon(?:er)?|ajust[ao]|modific[ao]|sube|baj[ao])\s+(?:el\s+)?stock\s+(?:de\s+)?(.+?)\s+(?:a|en|:)\s*(\d+)/i;
+        const match = text.match(re);
+        if (match) return { nombre: match[1].trim(), cantidad: parseInt(match[2]) };
+        // "stock de X: Y" o "X tiene Y en stock"
+        const re2 = /stock\s+de\s+(.+?)(?:\s+a|\s+en|\s*:)\s*(\d+)/i;
+        const m2 = text.match(re2);
+        if (m2) return { nombre: m2[1].trim(), cantidad: parseInt(m2[2]) };
+        return null;
+    }
+
+    async function handleStockUpdate(nombre, cantidad) {
+        const typingEl = appendTypingIndicator();
+        try {
+            const res = await fetch(`${API_BASE}/ia/buscar-producto`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre, negocio_id: negocioCtx.id })
+            });
+            removeTyping(typingEl);
+            const data = await res.json();
+
+            if (!data.productos || data.productos.length === 0) {
+                appendBotMessage(`No encontré ningún producto con el nombre **"${nombre}"** en tu inventario. ¿Puedes escribir el nombre exacto?`);
+                return;
+            }
+
+            // Si hay varios productos, mostrar opciones; si es uno, confirmar directo
+            const producto = data.productos[0];
+            appendStockConfirmCard(producto, cantidad);
+        } catch(e) {
+            removeTyping(typingEl);
+            appendBotMessage(`⚠️ Error buscando el producto: ${e.message}`);
+        }
+    }
+
+    function appendStockConfirmCard(producto, nuevaCantidad) {
+        const area = document.getElementById('messageArea');
+        const card = document.createElement('div');
+        card.className = 'message-container bot-message';
+        card.innerHTML = `
+            <div class="avatar">🤖</div>
+            <div class="message-content">
+                <div style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.3);border-radius:12px;padding:16px;margin-top:4px;">
+                    <p style="margin:0 0 8px;font-weight:600;">📦 Confirmar cambio de stock</p>
+                    <p style="margin:0 0 4px;font-size:0.9em;">Producto: <strong>${escapeHtml(producto.nombre)}</strong></p>
+                    <p style="margin:0 0 4px;font-size:0.9em;">Stock actual: <strong>${producto.stock}</strong> unidades</p>
+                    <p style="margin:0 0 12px;font-size:0.9em;">Nuevo stock: <strong style="color:#a855f7;">${nuevaCantidad}</strong> unidades</p>
+                    <div style="display:flex;gap:8px;">
+                        <button onclick="window.DoraConfirmarStock(${producto.id}, ${nuevaCantidad})"
+                            style="background:#a855f7;color:#fff;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;font-weight:600;">
+                            ✅ Confirmar
+                        </button>
+                        <button onclick="this.closest('.message-container').remove()"
+                            style="background:rgba(255,255,255,0.1);color:#ccc;border:none;border-radius:8px;padding:8px 16px;cursor:pointer;">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+        area.appendChild(card);
+        scrollBottom();
+    }
+
+    async function confirmarStock(productoId, nuevoStock) {
+        const typingEl = appendTypingIndicator();
+        try {
+            const res = await fetch(`${API_BASE}/ia/actualizar-stock`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ producto_id: productoId, nuevo_stock: nuevoStock, negocio_id: negocioCtx.id })
+            });
+            removeTyping(typingEl);
+            const data = await res.json();
+            if (data.ok) {
+                appendBotMessage(`✅ Listo, el stock de **${data.producto}** fue actualizado: ${data.stock_anterior} → **${data.stock_nuevo}** unidades.`);
+                // Eliminar la card de confirmación
+                document.querySelector('.message-container:last-of-type')?.previousElementSibling?.remove();
+            } else {
+                appendBotMessage(`⚠️ No se pudo actualizar: ${data.error}`);
+            }
+        } catch(e) {
+            removeTyping(typingEl);
+            appendBotMessage(`⚠️ Error actualizando el stock: ${e.message}`);
+        }
+    }
+
+    // Exponer para los botones inline
+    window.DoraConfirmarStock = confirmarStock;
+
     // ── Send message ───────────────────────────────────────────────────────
     async function send() {
         if (isThinking) return;
@@ -119,6 +212,15 @@ const DoraIA = (() => {
         appendUserBubble(text);
         conversationHistory.push({ role: 'user', content: text });
         saveHistory();
+
+        // Detectar intención de actualizar stock
+        const stockIntent = detectStockIntent(text);
+        if (stockIntent) {
+            setThinking(true);
+            await handleStockUpdate(stockIntent.nombre, stockIntent.cantidad);
+            setThinking(false);
+            return;
+        }
 
         setThinking(true);
         const typingEl = appendTypingIndicator();
