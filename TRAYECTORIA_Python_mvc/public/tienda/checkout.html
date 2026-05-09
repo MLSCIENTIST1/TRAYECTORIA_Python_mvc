@@ -1,0 +1,1088 @@
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+███████╗██╗   ██╗██╗  ██╗ ██████╗ ███╗   ███╗███████╗██████╗  ██████╗██╗ ██████╗ 
+╚══██╔══╝██║   ██║██║ ██╔╝██╔═══██╗████╗ ████║██╔════╝██╔══██╗██╔════╝██║██╔═══██╗
+   ██║   ██║   ██║█████╔╝ ██║   ██║██╔████╔██║█████╗  ██████╔╝██║     ██║██║   ██║
+   ██║   ██║   ██║██╔═██╗ ██║   ██║██║╚██╔╝██║██╔══╝  ██╔══██╗██║     ██║██║   ██║
+   ██║   ╚██████╔╝██║  ██╗╚██████╔╝██║ ╚═╝ ██║███████╗██║  ██║╚██████╗██║╚██████╔╝
+   ╚═╝    ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝╚═╝ ╚═════╝ 
+═══════════════════════════════════════════════════════════════════════════════
+
+TUKOMERCIO - Plataforma de Comercio Electrónico, Gamificación y Gestión Empresarial
+Anteriormente conocido como: Trayectoria / BizFlow Studio
+
+═══════════════════════════════════════════════════════════════════════════════
+AVISO DE PROPIEDAD INTELECTUAL Y DERECHOS DE AUTOR
+═══════════════════════════════════════════════════════════════════════════════
+
+© 2024-2026 Carlos Eduardo Huérfano Bermúdez. Todos los derechos reservados.
+
+TITULAR DE DERECHOS:
+  Nombre:     Carlos Eduardo Huérfano Bermúdez
+  C.C.:       1.064.986.917 (Cereté, Córdoba, Colombia)
+  Contacto:   carlos-5100@hotmail.com | +57 322 818 8375
+  Ubicación:  Bogotá D.C., Colombia
+
+INFORMACIÓN DEL PROYECTO:
+  Nombre:     TuKomercio
+  Inicio:     Julio 24, 2024
+  Repositorio: github.com/routeres (routeres@gmail.com)
+
+═══════════════════════════════════════════════════════════════════════════════
+TÉRMINOS DE USO Y RESTRICCIONES
+═══════════════════════════════════════════════════════════════════════════════
+
+Este código fuente es CONFIDENCIAL y constituye un SECRETO COMERCIAL.
+
+QUEDA ESTRICTAMENTE PROHIBIDO sin autorización ESCRITA del titular:
+
+  1. Copiar, reproducir o duplicar este código, total o parcialmente
+  2. Modificar, adaptar o crear obras derivadas
+  3. Distribuir, publicar, sublicenciar o transferir a terceros
+  4. Usar para desarrollo de productos competidores
+  5. Realizar ingeniería inversa, descompilar o desensamblar
+  6. Remover o alterar este aviso de propiedad intelectual
+
+El acceso a este código NO otorga ninguna licencia implícita o explícita.
+
+═══════════════════════════════════════════════════════════════════════════════
+PROTECCIÓN LEGAL
+═══════════════════════════════════════════════════════════════════════════════
+
+Este software está protegido por:
+
+  • Ley 23 de 1982 - Derechos de Autor (Colombia)
+  • Ley 1915 de 2018 - Modernización Derechos de Autor (Colombia)
+  • Decisión Andina 351 de 1993 - Régimen Común sobre Derecho de Autor
+  • Convenio de Berna para la Protección de Obras Literarias y Artísticas
+  • Tratado OMPI sobre Derecho de Autor (WCT)
+  • Acuerdo ADPIC/TRIPS - Organización Mundial del Comercio
+
+SANCIONES POR INFRACCIÓN:
+  • Civiles: Indemnización por daños y perjuicios (Art. 57, Ley 23/1982)
+  • Penales: Prisión de 4 a 8 años y multa (Art. 271, Código Penal Colombiano)
+
+═══════════════════════════════════════════════════════════════════════════════
+JURISDICCIÓN
+═══════════════════════════════════════════════════════════════════════════════
+
+Cualquier disputa será resuelta exclusivamente por los tribunales de
+Bogotá D.C., Colombia, bajo las leyes de la República de Colombia.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Para solicitar autorización de uso: carlos-5100@hotmail.com
+
+═══════════════════════════════════════════════════════════════════════════════
+-->
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Tienda</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+        
+        /* ==================== HEADER ==================== */
+        .checkout-header {
+            background: white;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .back-link:hover {
+            color: #3b82f6;
+        }
+        
+        .store-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        /* ==================== LAYOUT ==================== */
+        .checkout-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+        }
+        
+        @media (max-width: 900px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* ==================== CARDS ==================== */
+        .checkout-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .card-header i {
+            width: 40px;
+            height: 40px;
+            background: #eff6ff;
+            color: #3b82f6;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        
+        .card-header h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        
+        .card-header .step-number {
+            margin-left: auto;
+            background: #f1f5f9;
+            color: #64748b;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .card-body {
+            padding: 24px;
+        }
+        
+        /* ==================== AUTH OPTIONS ==================== */
+        .auth-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .auth-option {
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .auth-option:hover,
+        .auth-option.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .auth-option i {
+            font-size: 1.5rem;
+            color: #3b82f6;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .auth-option h4 {
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        
+        .auth-option p {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        
+        /* ==================== FORMS ==================== */
+        .form-section-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+        
+        .form-group .required {
+            color: #ef4444;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .form-group .hint {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        
+        /* ==================== ADDRESS TYPES ==================== */
+        .address-types {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        @media (max-width: 600px) {
+            .address-types {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .address-type {
+            padding: 12px 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-size: 0.75rem;
+        }
+        
+        .address-type:hover {
+            border-color: #3b82f6;
+        }
+        
+        .address-type.active {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .address-type .icon {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+        
+        /* ==================== SPECIAL FIELDS ==================== */
+        .special-fields {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        
+        .special-fields.show {
+            display: block;
+        }
+        
+        .special-fields h4 {
+            font-size: 0.85rem;
+            color: #92400e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* ==================== CREATE ACCOUNT ==================== */
+        .create-account-option {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            accent-color: #10b981;
+        }
+        
+        .checkbox-group label strong {
+            color: #059669;
+        }
+        
+        .password-field {
+            margin-top: 12px;
+            display: none;
+        }
+        
+        .password-field.show {
+            display: block;
+        }
+        
+        /* ==================== PAYMENT METHODS ==================== */
+        .payment-methods {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .payment-method:hover,
+        .payment-method.active {
+            border-color: #3b82f6;
+        }
+        
+        .payment-method.active {
+            background: #eff6ff;
+        }
+        
+        .payment-method .radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #cbd5e1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .payment-method.active .radio {
+            border-color: #3b82f6;
+        }
+        
+        .payment-method.active .radio::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #3b82f6;
+            border-radius: 50%;
+        }
+        
+        .payment-method .icon {
+            font-size: 1.3rem;
+        }
+        
+        .payment-method .info h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .payment-method .info p {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        
+        /* ==================== ORDER SUMMARY ==================== */
+        .order-summary {
+            position: sticky;
+            top: 100px;
+        }
+        
+        .summary-products {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .summary-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+        
+        .summary-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #f1f5f9;
+        }
+        
+        .summary-item-info {
+            flex: 1;
+        }
+        
+        .summary-item-info h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .summary-item-info p {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        
+        .summary-item-price {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .summary-totals {
+            padding-top: 16px;
+            border-top: 2px solid #f1f5f9;
+            margin-top: 16px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .summary-row.total {
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding-top: 10px;
+            border-top: 2px solid #e2e8f0;
+            margin-top: 10px;
+        }
+        
+        .summary-row .free {
+            color: #10b981;
+            font-weight: 600;
+        }
+        
+        /* ==================== SUBMIT BUTTON ==================== */
+        .submit-btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .submit-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .secure-note {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .secure-note i {
+            color: #10b981;
+        }
+
+        /* ── Cupón de descuento ── */
+        .cupon-section {
+            margin-bottom: 16px;
+            border: 1.5px dashed #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .cupon-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            background: #f8fafc;
+            user-select: none;
+        }
+        .cupon-toggle:hover { background: #f1f5f9; }
+        .cupon-input-wrap {
+            display: none;
+            padding: 12px 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .cupon-input-wrap.open { display: block; }
+        .cupon-row {
+            display: flex;
+            gap: 8px;
+        }
+        .cupon-row input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: border-color 0.2s;
+        }
+        .cupon-row input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        .cupon-row button {
+            padding: 10px 16px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .cupon-row button:hover { background: #2563eb; }
+        .cupon-row button:disabled { background: #94a3b8; cursor: not-allowed; }
+        #cuponMsg {
+            margin-top: 8px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        #cuponMsg.ok  { color: #16a34a; }
+        #cuponMsg.err { color: #ef4444; }
+        .cupon-remove {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0;
+            margin-left: 6px;
+        }
+        
+        /* ==================== LOGIN/GUEST FORMS ==================== */
+        .login-form,
+        .guest-form {
+            display: none;
+        }
+        
+        .login-form.show,
+        .guest-form.show {
+            display: block;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+        
+        .divider span {
+            padding: 0 12px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        
+        /* ==================== UTILITIES ==================== */
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e293b;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.error {
+            background: #ef4444;
+        }
+        
+        .toast.success {
+            background: #10b981;
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== HEADER ==================== -->
+    <header class="checkout-header">
+        <div class="header-content">
+            <a href="#" id="backLink" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                <span>Volver al carrito</span>
+            </a>
+            <div class="store-name" id="storeName">Tienda</div>
+            <div></div>
+        </div>
+    </header>
+    
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="checkout-container">
+        <!-- Left Column - Forms -->
+        <div class="checkout-forms">
+            
+            <!-- ==================== STEP 1: IDENTIFICACIÓN ==================== -->
+            <div class="checkout-card">
+                <div class="card-header">
+                    <i class="fas fa-user"></i>
+                    <h2>¿Cómo quieres continuar?</h2>
+                    <span class="step-number">1</span>
+                </div>
+                <div class="card-body">
+                    <!-- Auth Options -->
+                    <div class="auth-options">
+                        <div class="auth-option" data-option="login" onclick="selectAuthOption('login')">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <h4>Ya tengo cuenta(Próximamente)</h4>
+                            <p>Iniciar sesión en TuKo</p>
+                        </div>
+                        <div class="auth-option active" data-option="guest" onclick="selectAuthOption('guest')">
+                            <i class="fas fa-user-plus"></i>
+                            <h4>Continuar como invitado</h4>
+                            <p>Compra rápida sin registro</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Login Form -->
+                    <div class="login-form" id="loginForm">
+                        <div class="form-group">
+                            <label>Correo electrónico</label>
+                            <input type="email" id="loginEmail" placeholder="tu@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña</label>
+                            <input type="password" id="loginPassword" placeholder="Tu contraseña">
+                        </div>
+                        <button type="button" class="submit-btn" style="background: #3b82f6; margin-top: 0;" onclick="handleLogin()">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Iniciar Sesión
+                        </button>
+                        <div class="divider"><span>o</span></div>
+                        <p style="text-align: center; font-size: 0.85rem; color: #64748b;">
+                            ¿No tienes cuenta? 
+                            <a href="#" onclick="selectAuthOption('guest')" style="color: #3b82f6;">Continúa como invitado</a>
+                        </p>
+                    </div>
+                    
+                    <!-- Guest Form -->
+                    <div class="guest-form show" id="guestForm">
+                        <div class="form-section-title">
+                            <i class="fas fa-user"></i> Tus datos de contacto
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nombre <span class="required">*</span></label>
+                                <input type="text" id="nombre" placeholder="Juan" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Apellidos</label>
+                                <input type="text" id="apellidos" placeholder="Pérez García">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Correo electrónico <span class="required">*</span></label>
+                                <input type="email" id="correo" placeholder="tu@email.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label>WhatsApp <span class="required">*</span></label>
+                                <input type="tel" id="telefono" placeholder="300 123 4567" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Crear cuenta opcional -->
+                        <div class="create-account-option">
+                            <div class="checkbox-group">
+                                
+                                <strong>NOTA IMPORTANTE</strong><br>
+                                    <span style="font-size: 0.8rem; color: #64748b;">
+                                        El valor del envio depende de la ciudad de destino, el agente que reciba tu pedido te indicará el valor el cual se sumará a tu compra.
+                                    </span>
+                            </div>
+                            <div class="password-field" id="passwordField">
+                                <div class="form-group" style="margin: 0; margin-top: 12px;">
+                                    <label>Crear contraseña</label>
+                                    <input type="password" id="password" placeholder="Mínimo 6 caracteres">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ==================== STEP 2: DIRECCIÓN ==================== -->
+            <div class="checkout-card">
+                <div class="card-header">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h2>Dirección de envío</h2>
+                    <span class="step-number">2</span>
+                </div>
+                <div class="card-body">
+                    <div id="newAddressForm">
+                        <div class="form-section-title">
+                            <i class="fas fa-home"></i> Tipo de ubicación
+                        </div>
+                        
+                        <div class="address-types">
+                            <div class="address-type active" data-type="residencia" onclick="selectAddressType('residencia')">
+                                <div class="icon">🏠</div>
+                                <div>Residencia</div>
+                            </div>
+                            <div class="address-type" data-type="oficina" onclick="selectAddressType('oficina')">
+                                <div class="icon">🏢</div>
+                                <div>Oficina</div>
+                            </div>
+                            <div class="address-type" data-type="local_comercial" onclick="selectAddressType('local_comercial')">
+                                <div class="icon">🏪</div>
+                                <div>Local</div>
+                            </div>
+                            <div class="address-type" data-type="vereda" onclick="selectAddressType('vereda')">
+                                <div class="icon">🌾</div>
+                                <div>Vereda</div>
+                            </div>
+                            <div class="address-type" data-type="kilometro" onclick="selectAddressType('kilometro')">
+                                <div class="icon">📍</div>
+                                <div>Kilómetro</div>
+                            </div>
+                            <div class="address-type" data-type="centro_penitenciario" onclick="selectAddressType('centro_penitenciario')">
+                                <div class="icon">🔒</div>
+                                <div>Penitenciario</div>
+                            </div>
+                            <div class="address-type" data-type="guarnicion_militar" onclick="selectAddressType('guarnicion_militar')">
+                                <div class="icon">🎖️</div>
+                                <div>Militar</div>
+                            </div>
+                            <div class="address-type" data-type="punto_recogida" onclick="selectAddressType('punto_recogida')">
+                                <div class="icon">📦</div>
+                                <div>Recogida</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Campos especiales según tipo -->
+                        <div class="special-fields" id="specialFields">
+                            <h4><i class="fas fa-info-circle"></i> <span id="specialFieldsTitle">Información adicional</span></h4>
+                            <div id="specialFieldsContent"></div>
+                        </div>
+                        
+                        <div class="form-section-title">
+                            <i class="fas fa-map"></i> Ubicación
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Departamento <span class="required">*</span></label>
+                                <select id="departamento" onchange="loadCities()" required>
+                                    <option value="">Seleccionar...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Ciudad <span class="required">*</span></label>
+                                <select id="ciudad" required onchange="actualizarFletes()">
+                                    <option value="">Seleccionar...</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Localidad</label>
+                                <input type="text" id="localidad" placeholder="Ej: Kennedy, Suba (Bogotá)">
+                                <span class="hint">Solo para ciudades grandes</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Barrio <span class="required">*</span></label>
+                                <input type="text" id="barrio" placeholder="Nombre del barrio" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Dirección <span class="required">*</span></label>
+                            <input type="text" id="direccion" placeholder="Cra 80 #42-30 Sur" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Complemento</label>
+                                <input type="text" id="complemento" placeholder="Apto 301, Torre B, Local 3...">
+                            </div>
+                            <div class="form-group">
+                                <label>Alias (opcional)</label>
+                                <input type="text" id="alias" placeholder="Mi casa, Oficina...">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Referencias de ubicación</label>
+                            <textarea id="referencias" placeholder="Edificio de ladrillo rojo, al lado de la panadería, portería 24 horas..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ==================== STEP 2.5: MODO DE ENTREGA ==================== -->
+            <!-- Filled dynamically by renderEnviosSection() in checkout.js v6.0 -->
+            <div class="checkout-card" id="enviosSection" style="display:none"></div>
+
+            <!-- ==================== STEP 3: MÉTODO DE PAGO ==================== -->
+            <div class="checkout-card">
+                <div class="card-header">
+                    <i class="fas fa-credit-card"></i>
+                    <h2>Método de pago</h2>
+                    <span class="step-number">3</span>
+                </div>
+                <div class="card-body">
+                    <div class="payment-methods">
+                        <div class="payment-method active" data-method="efectivo" onclick="selectPaymentMethod('efectivo')">
+                            <div class="radio"></div>
+                            <div class="icon">💵</div>
+                            <div class="info">
+                                <h4>Efectivo (Contra entrega)</h4>
+                                <p>Paga cuando recibas tu pedido</p>
+                            </div>
+                        </div>
+                        <div class="payment-method" data-method="nequi" onclick="selectPaymentMethod('nequi')">
+                            <div class="radio"></div>
+                            <div class="icon">📱</div>
+                            <div class="info">
+                                <h4>Nequi</h4>
+                                <p>Transferencia por Nequi</p>
+                            </div>
+                        </div>
+                        <div class="payment-method" data-method="daviplata" onclick="selectPaymentMethod('daviplata')">
+                            <div class="radio"></div>
+                            <div class="icon">📱</div>
+                            <div class="info">
+                                <h4>Daviplata</h4>
+                                <p>Transferencia por Daviplata</p>
+                            </div>
+                        </div>
+                        <div class="payment-method" data-method="transferencia" onclick="selectPaymentMethod('transferencia')">
+                            <div class="radio"></div>
+                            <div class="icon">🏦</div>
+                            <div class="info">
+                                <h4>Transferencia Bancaria</h4>
+                                <p>Transferencia a cuenta bancaria</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label>Notas adicionales para tu pedido</label>
+                        <textarea id="notas" placeholder="Instrucciones especiales de entrega, horarios preferidos, etc."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ==================== RIGHT COLUMN - ORDER SUMMARY ==================== -->
+        <div class="order-summary">
+            <div class="checkout-card">
+                <div class="card-header">
+                    <i class="fas fa-shopping-bag"></i>
+                    <h2>Resumen del pedido</h2>
+                </div>
+                <div class="card-body">
+                    <div class="summary-products" id="summaryProducts">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                    
+                    <!-- ★ CUPÓN DE DESCUENTO -->
+                    <div class="cupon-section" id="cuponSection">
+                        <div class="cupon-toggle" onclick="toggleCuponInput()">
+                            <span>🏷️ ¿Tienes un cupón de descuento?</span>
+                            <i class="fas fa-chevron-down" id="cuponChevron"></i>
+                        </div>
+                        <div class="cupon-input-wrap" id="cuponInputWrap">
+                            <div class="cupon-row">
+                                <input type="text" id="cuponCodigo" placeholder="Ingresa tu código"
+                                       oninput="this.value = this.value.toUpperCase()"
+                                       onkeydown="if(event.key==='Enter') aplicarCupon()">
+                                <button type="button" id="cuponBtn" onclick="aplicarCupon()">Aplicar</button>
+                            </div>
+                            <div id="cuponMsg"></div>
+                        </div>
+                    </div>
+
+                    <div class="summary-totals">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="summarySubtotal">$0</span>
+                        </div>
+                        <div class="summary-row" id="summaryDescuentoRow" style="display:none; color:#10b981;">
+                            <span>🏷️ Descuento <span id="summaryDescuentoCodigo" style="font-size:0.75rem;"></span></span>
+                            <span id="summaryDescuento" style="font-weight:600;">-$0</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Envío</span>
+                            <span id="summaryShipping">Calculando...</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span id="summaryTotal">$0</span>
+                        </div>
+                    </div>
+
+                    <button class="submit-btn" id="submitBtn" onclick="submitOrder()">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>Finalizar pedido por WhatsApp</span>
+                        <div class="loading-spinner" id="loadingSpinner"></div>
+                    </button>
+                    
+                    <p class="secure-note">
+                        <i class="fas fa-lock"></i> Compra segura - Pago contra entrega
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+     <script src="checkout_fix.js"></script>
+    <script src="/tienda/checkout.js"></script>
+    
+</body>
+</html>
