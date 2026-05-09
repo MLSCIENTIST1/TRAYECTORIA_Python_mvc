@@ -1,6 +1,6 @@
 /**
  * =========================================================
- * CHECKOUT.JS - tukomercio v6.0 SHIPPING EDITION
+ * CHECKOUT.JS - tukomercio v8.0 WOMPI EDITION
  * ★ v5.6: Confirmación legal en checkout
  * ★ v6.0: Sistema de envíos inteligente
  *   - Lee config_envios del negocio (JSONB)
@@ -9,6 +9,12 @@
  *   - Advertencia al elegir transportadora más cara
  *   - Flete gratis automático según umbral configurado
  *   - Flete "A confirmar" si ciudad sin tarifas
+ * ★ v7.0: Cupones de descuento
+ * ★ v8.0: Wompi — Pagos en línea (tarjeta, PSE, Nequi)
+ *   - Detecta si el negocio tiene Wompi activo
+ *   - Muestra botón "Pagar en línea" dinámicamente
+ *   - Genera firma de integridad vía backend
+ *   - Abre widget Wompi en modal nativo
  * ★ Actualizado: Mayo 2026
  * =========================================================
  */
@@ -39,6 +45,10 @@ let selectedFletePrice = null;     // precio del flete seleccionado (número)
 
 // ★ v7.0: Cupones
 let cuponAplicado = null;          // { codigo, descuento, tipo, valor, descripcion }
+
+// ★ v8.0: Wompi
+let wompiConfig = null;            // { activo, public_key, ambiente } o null
+let _wompiScriptLoaded = false;    // evita cargar el script dos veces
 
 // ==========================================
 // DEPARTAMENTOS Y CIUDADES DE COLOMBIA
@@ -208,6 +218,9 @@ async function loadStoreConfig(slug) {
 
             // ★ v6.0: cargar config de envíos de este negocio
             await loadConfigEnvios(tiendaConfig.negocio_id);
+
+            // ★ v8.0: cargar config Wompi (no bloquea si falla)
+            loadWompiConfig(tiendaConfig.negocio_id).catch(() => {});
 
             const primaryColor = negocio.config_tienda?.styles?.primaryColor || negocio.color_tema || '#2563eb';
             document.documentElement.style.setProperty('--primary', primaryColor);
@@ -931,9 +944,9 @@ function validateForm() {
 // ==========================================
 // ★★★ ENVIAR PEDIDO v5.6 CON LEGAL ★★★
 // ==========================================
-async function submitOrder() {
-    console.log('\n📤 ===== INICIANDO ENVÍO DE PEDIDO v5.6 =====');
-    
+async function submitOrder(metodoPagoOverride = null, wompiRef = null) {
+    console.log('\n📤 ===== INICIANDO ENVÍO DE PEDIDO v8.0 =====');
+
     const btn = document.getElementById('submitBtn');
     const spinner = document.getElementById('loadingSpinner');
     
@@ -1023,7 +1036,9 @@ async function submitOrder() {
             descuento: descuento,
             costo_envio: costoEnvio,
             total: total,
-            metodo_pago: selectedPaymentMethod,
+            metodo_pago: metodoPagoOverride || selectedPaymentMethod,
+            // ★ v8.0: referencia Wompi si aplica
+            wompi_referencia: wompiRef || null,
             // ★ v6.0: entrega
             modo_entrega: selectedDeliveryMode,
             transportadora: selectedDeliveryMode === 'domicilio' ? (selectedTransportadora || null) : null,
@@ -1053,7 +1068,13 @@ async function submitOrder() {
         
         if (response.ok && data.success) {
             console.log('✅ Pedido creado exitosamente');
-            
+
+            // ★ v9.0: marcar carrito como recuperado (silencioso)
+            const _nid = tiendaConfig && (tiendaConfig.negocio_id || tiendaConfig.id);
+            const _tel = document.getElementById('telefono')?.value?.trim();
+            const _pid = data.pedido?.id_pedido || data.pedido?.id || null;
+            if (_nid && _tel) marcarCarritoRecuperado(_nid, _tel, _pid);
+
             if (data.comprador && data.comprador.token) {
                 localStorage.setItem('comprador_token', data.comprador.token);
             }
@@ -1077,15 +1098,23 @@ async function submitOrder() {
             };
             
             showToast('¡Pedido creado exitosamente!', 'success');
-            
+
+            // Código del pedido para la página de seguimiento
+            const _codigoPedido = data.pedido?.codigo_pedido || data.pedido?.numero_pedido || null;
+
             setTimeout(() => {
                 enviarPedidoPorWhatsApp(pedidoParaWhatsApp);
             }, 1000);
-            
+
             clearCarrito();
-            
+
             setTimeout(() => {
-                window.location.href = `/tienda/?slug=${tiendaConfig.slug}&pedido_exitoso=true`;
+                if (_codigoPedido && tiendaConfig?.slug) {
+                    // ★ v10.0: redirigir a página de seguimiento personalizada
+                    window.location.href = `/heyden.html?c=${encodeURIComponent(_codigoPedido)}&slug=${tiendaConfig.slug}`;
+                } else {
+                    window.location.href = `/tienda/?slug=${tiendaConfig.slug}&pedido_exitoso=true`;
+                }
             }, 2000);
             
         } else {
@@ -1536,6 +1565,186 @@ function injectEnviosStyles() {
 }
 
 // ==========================================
+// ★ v8.0: WOMPI — PAGOS EN LÍNEA
+// ==========================================
+
+/**
+ * Carga la config pública de Wompi del negocio.
+ * Si está activo, inyecta el botón "Pagar en línea" en el resumen.
+ */
+async function loadWompiConfig(negocioId) {
+    try {
+        const res = await fetch(`${API_URL}/negocio/${negocioId}/wompi/config-pub`);
+        if (!res.ok) return;
+        const cfg = await res.json();
+        wompiConfig = cfg;
+        renderWompiButton();
+    } catch (e) {
+        console.warn('⚠️ Wompi config no disponible:', e.message);
+        wompiConfig = null;
+    }
+}
+
+/**
+ * Muestra u oculta el botón de pago Wompi en el resumen del pedido.
+ * Lo inserta dinámicamente después del botón de WhatsApp.
+ */
+function renderWompiButton() {
+    const existing = document.getElementById('wompiPayBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    if (!submitBtn) return;
+
+    if (!wompiConfig || !wompiConfig.activo || !wompiConfig.public_key) {
+        // Wompi no activo — remover si existía
+        if (existing) existing.remove();
+        return;
+    }
+
+    if (existing) return; // ya insertado
+
+    // Contenedor separador
+    const divider = document.createElement('div');
+    divider.id = 'wompiDivider';
+    divider.style.cssText = 'display:flex;align-items:center;gap:8px;margin:12px 0;';
+    divider.innerHTML = `
+        <span style="flex:1;height:1px;background:#e2e8f0;"></span>
+        <span style="font-size:0.75rem;color:#94a3b8;white-space:nowrap;">o paga en línea</span>
+        <span style="flex:1;height:1px;background:#e2e8f0;"></span>
+    `;
+
+    // Botón Wompi
+    const btn = document.createElement('button');
+    btn.id = 'wompiPayBtn';
+    btn.type = 'button';
+    btn.onclick = () => pagarConWompi();
+    btn.style.cssText = `
+        width:100%;padding:15px 24px;
+        background:linear-gradient(135deg,#7B3FE4 0%,#4F46E5 100%);
+        color:white;border:none;border-radius:12px;
+        font-size:1rem;font-weight:700;cursor:pointer;
+        display:flex;align-items:center;justify-content:center;gap:10px;
+        transition:all .3s;font-family:inherit;
+    `;
+    btn.innerHTML = `
+        <i class="fas fa-credit-card"></i>
+        <span>Pagar en línea</span>
+        <span style="font-size:0.75rem;opacity:.8;margin-left:2px;">(Tarjeta · PSE · Nequi)</span>
+    `;
+    btn.addEventListener('mouseenter', () => { btn.style.transform = 'translateY(-2px)'; btn.style.opacity = '.92'; });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; btn.style.opacity = '1'; });
+
+    // Insertar después del botón WhatsApp
+    submitBtn.parentNode.insertBefore(divider, submitBtn.nextSibling);
+    submitBtn.parentNode.insertBefore(btn, divider.nextSibling);
+
+    console.log('✅ Botón Wompi insertado');
+}
+
+/**
+ * Carga el script del widget Wompi (solo una vez).
+ */
+function cargarScriptWompi() {
+    return new Promise((resolve, reject) => {
+        if (_wompiScriptLoaded || window.WidgetCheckout) {
+            _wompiScriptLoaded = true;
+            resolve();
+            return;
+        }
+        const s = document.createElement('script');
+        s.src = 'https://checkout.wompi.co/widget.js';
+        s.async = true;
+        s.onload  = () => { _wompiScriptLoaded = true; resolve(); };
+        s.onerror = () => reject(new Error('No se pudo cargar el widget de Wompi'));
+        document.head.appendChild(s);
+    });
+}
+
+/**
+ * Flujo completo de pago con Wompi:
+ *  1. Valida el formulario
+ *  2. Llama backend → recibe referencia + firma
+ *  3. Carga script Wompi y abre el modal
+ */
+async function pagarConWompi() {
+    if (!validateForm()) return;
+
+    const btn = document.getElementById('wompiPayBtn');
+    if (btn) { btn.disabled = true; btn.querySelector('span').textContent = 'Preparando pago...'; }
+
+    try {
+        // Calcular total igual que submitOrder
+        const subtotal  = getSubtotal();
+        const costoEnvio = (selectedDeliveryMode === 'pickup' || selectedFletePrice === 0)
+            ? 0 : (selectedFletePrice || 0);
+        const descuento = cuponAplicado ? cuponAplicado.descuento : 0;
+        const total = Math.max(0, subtotal - descuento + costoEnvio);
+
+        if (total <= 0) {
+            showToast('El total debe ser mayor a cero', 'error');
+            return;
+        }
+
+        // URL de retorno tras el pago
+        const slug = tiendaConfig.slug;
+        const redirectUrl = `${location.origin}/tienda/pago-exitoso.html?slug=${slug}`;
+
+        // Pedir sesión al backend
+        const sesRes = await fetch(`${API_URL}/negocio/${tiendaConfig.negocio_id}/wompi/session`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ total, redirect_url: redirectUrl })
+        });
+        const sesData = await sesRes.json();
+        if (!sesRes.ok) throw new Error(sesData.error || 'Error creando sesión Wompi');
+
+        // Cargar widget
+        await cargarScriptWompi();
+
+        // Abrir modal Wompi
+        const checkout = new window.WidgetCheckout({
+            currency:       sesData.currency,
+            amountInCents:  sesData.amount_in_cents,
+            reference:      sesData.reference,
+            publicKey:      sesData.public_key,
+            redirectUrl:    sesData.redirect_url,
+            signature: {
+                integrity: sesData.signature
+            }
+        });
+
+        checkout.open(async function(result) {
+            const tx = result.transaction;
+            if (!tx) return;
+
+            if (tx.status === 'APPROVED') {
+                showToast('✅ Pago aprobado. Generando pedido...', 'success');
+                // Crear el pedido con método de pago "wompi" y referencia
+                document.getElementById('submitBtn').dataset.wompiRef = sesData.reference;
+                document.getElementById('submitBtn').dataset.wompiStatus = tx.status;
+                await submitOrder('wompi', sesData.reference);
+            } else if (tx.status === 'DECLINED') {
+                showToast('❌ Pago rechazado. Intenta con otro medio.', 'error');
+            } else {
+                showToast(`Estado del pago: ${tx.status}`, 'error');
+            }
+        });
+
+    } catch (e) {
+        console.error('❌ Error Wompi:', e);
+        showToast(e.message || 'Error iniciando el pago', 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `
+                <i class="fas fa-credit-card"></i>
+                <span>Pagar en línea</span>
+                <span style="font-size:0.75rem;opacity:.8;margin-left:2px;">(Tarjeta · PSE · Nequi)</span>
+            `;
+        }
+    }
+}
+
+// ==========================================
 // ★ v7.0: CUPONES DE DESCUENTO
 // ==========================================
 
@@ -1665,5 +1874,72 @@ window.actualizarFletes      = actualizarFletes;
 window.toggleCuponInput      = toggleCuponInput;
 window.aplicarCupon          = aplicarCupon;
 window.limpiarCupon          = limpiarCupon;
+// ★ v8.0: wompi
+window.pagarConWompi         = pagarConWompi;
+window.loadWompiConfig       = loadWompiConfig;
 
-console.log('✅ Checkout.js v7.0 Cupones Edition cargado ✅');
+// ==========================================
+// ★ v9.0: CARRITO ABANDONADO
+// ==========================================
+
+/**
+ * Envía snapshot del carrito al backend cuando el comprador llena su teléfono
+ * pero podría no terminar la compra. Fire-and-forget: nunca bloquea el checkout.
+ */
+async function registrarCarritoAbandonado() {
+    try {
+        const nid = tiendaConfig && (tiendaConfig.negocio_id || tiendaConfig.id);
+        if (!nid || !carrito || carrito.length === 0) return;
+
+        const telefono = (document.getElementById('telefono')?.value || '').trim();
+        if (!telefono || telefono.replace(/\D/g,'').length < 7) return;
+
+        const nombre = (document.getElementById('nombre')?.value || '').trim() || null;
+        const correo = (document.getElementById('correo')?.value  || '').trim() || null;
+
+        const total = carrito.reduce((s, item) =>
+            s + (parseFloat(item.precio || 0) * (item.cantidad || 1)), 0);
+
+        const productos = carrito.map(item => ({
+            id:       item.id,
+            nombre:   item.nombre || item.name || 'Producto',
+            precio:   parseFloat(item.precio || 0),
+            cantidad: item.cantidad || 1,
+            imagen_url: item.imagen_url || item.imagen || null,
+        }));
+
+        await fetch(`${API_URL}/negocio/${nid}/carrito/guardar`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ telefono, nombre, correo, productos, total }),
+        });
+    } catch (_) { /* silencioso — nunca bloquear el checkout */ }
+}
+
+/**
+ * Marca el carrito como recuperado después de un pedido exitoso.
+ * Llamado internamente por submitOrder() al completarse.
+ */
+async function marcarCarritoRecuperado(negocioId, telefono, pedidoId) {
+    try {
+        if (!negocioId || !telefono) return;
+        await fetch(`${API_URL}/negocio/${negocioId}/carrito/recuperado`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ telefono, pedido_id: pedidoId }),
+        });
+    } catch (_) { /* silencioso */ }
+}
+
+// Escuchar blur del campo teléfono con event delegation (capture phase)
+// para no depender del orden de inicialización del DOM.
+document.addEventListener('blur', function(e) {
+    if (e.target && e.target.id === 'telefono') {
+        registrarCarritoAbandonado();
+    }
+}, true);
+
+window.registrarCarritoAbandonado = registrarCarritoAbandonado;
+window.marcarCarritoRecuperado    = marcarCarritoRecuperado;
+
+console.log('✅ Checkout.js v9.0 Carritos Abandonados cargado ✅');
