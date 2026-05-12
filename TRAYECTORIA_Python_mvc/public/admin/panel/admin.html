@@ -2918,11 +2918,36 @@
         }
 
         // ── Cambiar plan (existente) ──
-        function openChangePlanModal(negocioId, nombre, currentPlan) {
+        async function openChangePlanModal(negocioId, nombre, currentPlan) {
             document.getElementById('changePlanNegocioId').value = negocioId;
             document.getElementById('changePlanNegocioNombre').value = nombre;
-            document.getElementById('changePlanSelect').value = currentPlan || 'basic';
             document.getElementById('changePlanNotas').value = '';
+
+            // Cargar planes dinámicamente si no están cargados aún
+            if (!allPlanes || allPlanes.length === 0) {
+                try {
+                    const r = await fetch(`${API_BASE}/planes`, { headers: getHeaders(), credentials: 'include' });
+                    const d = await r.json();
+                    if (d.success) allPlanes = d.planes;
+                } catch(e) { console.warn('No se pudieron cargar planes:', e); }
+            }
+
+            const sel = document.getElementById('changePlanSelect');
+            if (allPlanes && allPlanes.length > 0) {
+                sel.innerHTML = allPlanes.map(p =>
+                    `<option value="${p.key}" ${p.key === (currentPlan || 'basic') ? 'selected' : ''}>
+                        ${p.icono || ''} ${p.nombre} ${p.precio_mensual > 0 ? '($' + Number(p.precio_mensual).toLocaleString('es-CO') + '/mes)' : '(Gratis)'}
+                    </option>`
+                ).join('');
+            } else {
+                // fallback hardcodeado
+                sel.innerHTML = `
+                    <option value="basic"   ${currentPlan==='basic'   ?'selected':''}>🌱 Basic (Gratis)</option>
+                    <option value="pro"     ${currentPlan==='pro'     ?'selected':''}>🚀 Pro ($49.900/mes)</option>
+                    <option value="premium" ${currentPlan==='premium' ?'selected':''}>💎 Premium ($99.900/mes)</option>
+                    <option value="delux"   ${currentPlan==='delux'   ?'selected':''}>👑 Delux ($199.900/mes)</option>`;
+            }
+
             document.getElementById('changePlanModal').classList.add('active');
         }
 
@@ -2930,15 +2955,28 @@
             const negocioId = document.getElementById('changePlanNegocioId').value;
             const planKey   = document.getElementById('changePlanSelect').value;
             const notas     = document.getElementById('changePlanNotas').value;
+            const btnGuardar = document.querySelector('#changePlanModal .btn--primary');
+            btnGuardar.disabled = true;
+            btnGuardar.innerHTML = '<div class="loading__spinner" style="width:14px;height:14px;border-width:2px;margin:0;display:inline-block;"></div> Guardando…';
             try {
                 const response = await fetch(`${API_BASE}/negocios/${negocioId}/plan`, {
                     method: 'PUT', headers: getHeaders(), credentials: 'include',
                     body: JSON.stringify({ plan_key: planKey, notas })
                 });
                 const result = await response.json();
-                if (result.success) { showToast(result.message, 'success'); closeModal('changePlanModal'); loadNegocios(); }
-                else showToast(result.error || 'Error cambiando plan', 'error');
-            } catch (error) { showToast('Error de conexión', 'error'); }
+                if (result.success) {
+                    showToast(`✅ ${result.message}`, 'success');
+                    closeModal('changePlanModal');
+                    loadNegocios();
+                } else {
+                    showToast(result.error || 'Error cambiando plan', 'error');
+                }
+            } catch (error) {
+                showToast('Error de conexión al cambiar plan', 'error');
+            } finally {
+                btnGuardar.disabled = false;
+                btnGuardar.innerHTML = '<i class="bi bi-check-lg"></i><span>Cambiar Plan</span>';
+            }
         }
         
         // ═══════════════════════════════════════════════════════════════════════════
