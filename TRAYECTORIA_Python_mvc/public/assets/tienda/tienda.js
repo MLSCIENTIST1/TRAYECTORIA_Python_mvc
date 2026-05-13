@@ -1409,77 +1409,246 @@ function applyProductDetailTheme(primaryColor, tema) {
 
     // Convertir hex → rgba helper
     function hexToRgba(hex, alpha) {
-        const r = parseInt(hex.slice(1,3), 16);
-        const g = parseInt(hex.slice(3,5), 16);
-        const b = parseInt(hex.slice(5,7), 16);
-        return `rgba(${r},${g},${b},${alpha})`;
+        try {
+            hex = hex.replace('#','');
+            if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+            const r = parseInt(hex.slice(0,2), 16);
+            const g = parseInt(hex.slice(2,4), 16);
+            const b = parseInt(hex.slice(4,6), 16);
+            return `rgba(${r},${g},${b},${alpha})`;
+        } catch(_) { return `rgba(37,99,235,${alpha})`; }
     }
 
-    // Overrides base: el acento siempre sigue el color de la tienda
+    // ══════════════════════════════════════════
+    // BASE: variables que se aplican en TODOS los temas.
+    // El acento y sus derivados siempre siguen el color del designer.
+    // El header siempre usa el color primario → coherencia con el navbar.
+    // ══════════════════════════════════════════
     let css = `
+/* ── Variables de acento ── */
 :root {
-    --pd-accent:       ${primaryColor};
-    --pd-accent-light: ${colorLight};
-    --pd-accent-dark:  ${colorDark};
-    --pd-accent-glow:  ${hexToRgba(primaryColor, 0.4)};
-    --pd-accent-soft:  ${hexToRgba(primaryColor, 0.1)};
+    --pd-accent:        ${primaryColor};
+    --pd-accent-light:  ${colorLight};
+    --pd-accent-dark:   ${colorDark};
+    --pd-accent-glow:   ${hexToRgba(primaryColor, 0.35)};
+    --pd-accent-soft:   ${hexToRgba(primaryColor, 0.10)};
+    --pd-border-accent: ${hexToRgba(primaryColor, 0.28)};
+    --pd-shadow-glow:   0 0 32px ${hexToRgba(primaryColor, 0.20)};
 }
-/* Botones CTA del panel: usar color de la tienda */
-.pd-btn-cart,
-.pd-add-to-cart,
-.pd-buy-now,
-[class*="pd-btn"]:not(.pd-btn-ghost):not(.pd-btn-outline):not(.pd-close) {
+
+/* ── Header: siempre en el color de la tienda (igual que el navbar) ── */
+.pd-header {
     background: ${primaryColor} !important;
+    border-bottom: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* ── Breadcrumb y "Volver" sobre header de color ── */
+.pd-breadcrumb a,
+.pd-breadcrumb i,
+.pd-breadcrumb span,
+#pdProductName { color: rgba(255,255,255,0.88) !important; }
+.pd-breadcrumb span,
+#pdProductName { color: #fff !important; font-weight: 600 !important; }
+.pd-breadcrumb a:hover { color: #fff !important; opacity: 0.75; }
+
+/* ── Botón "Volver" sobre header de color ── */
+.pd-close {
+    background: rgba(255,255,255,0.15) !important;
+    border-color: rgba(255,255,255,0.30) !important;
+    color: #fff !important;
+}
+.pd-close * { color: #fff !important; }
+.pd-close:hover {
+    background: rgba(255,255,255,0.28) !important;
+    border-color: rgba(255,255,255,0.50) !important;
+    transform: scale(1.04) !important;
+}
+
+/* ── Línea decorativa superior: color de tienda, no dorado ── */
+.pd-panel::before {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        ${hexToRgba(primaryColor, 0.6)} 20%,
+        ${primaryColor} 50%,
+        ${hexToRgba(primaryColor, 0.6)} 80%,
+        transparent 100%
+    ) !important;
+    opacity: 0.7 !important;
+}
+
+/* ── Brillo en esquina imagen: color de tienda, no dorado ── */
+.pd-gallery-main::before {
+    background: radial-gradient(
+        circle at 30% 30%,
+        ${hexToRgba(primaryColor, 0.07)} 0%,
+        transparent 55%
+    ) !important;
+}
+
+/* ── Categoría badge ── */
+.pd-category {
+    background: ${hexToRgba(primaryColor, 0.10)} !important;
+    border-color: ${hexToRgba(primaryColor, 0.28)} !important;
+    color: ${primaryColor} !important;
+}
+.pd-category:hover {
+    background: ${primaryColor} !important;
+    color: #fff !important;
+}
+
+/* ── Botones primarios de acción ── */
+.pd-btn-primary {
+    background: linear-gradient(135deg, ${primaryColor}, ${colorDark}) !important;
+    box-shadow: 0 4px 16px ${hexToRgba(primaryColor, 0.35)} !important;
+    color: #fff !important;
+}
+.pd-btn-primary:hover {
+    background: linear-gradient(135deg, ${colorLight}, ${primaryColor}) !important;
+    box-shadow: 0 6px 20px ${hexToRgba(primaryColor, 0.45)} !important;
+}
+
+/* ── Botones secundarios: borde del color de tienda en hover ── */
+.pd-btn-secondary:hover {
     border-color: ${primaryColor} !important;
+    color: ${primaryColor} !important;
 }
-[class*="pd-btn"]:not(.pd-btn-ghost):not(.pd-btn-outline):not(.pd-close):hover {
-    background: ${colorDark} !important;
-    border-color: ${colorDark} !important;
+
+/* ── Cantidad: hover en color tienda ── */
+.pd-quantity-btn:hover {
+    background: ${hexToRgba(primaryColor, 0.10)} !important;
+    color: ${primaryColor} !important;
 }
-.pd-breadcrumb a:hover,
-.pd-category-tag { color: ${primaryColor} !important; }
+
+/* ── Thumbnail activo ── */
+.pd-thumbnail.active {
+    border-color: ${primaryColor} !important;
+    box-shadow: 0 0 0 2px ${hexToRgba(primaryColor, 0.20)} !important;
+}
+.pd-thumbnail .video-thumb-icon { color: ${primaryColor} !important; }
+
+/* ── Dot activo en galería ── */
+.pd-dot.active {
+    background: ${primaryColor} !important;
+    box-shadow: 0 0 10px ${hexToRgba(primaryColor, 0.40)} !important;
+}
+
+/* ── Navegación galería hover ── */
+.pd-gallery-nav:hover {
+    border-color: ${primaryColor} !important;
+    color: ${primaryColor} !important;
+}
+
+/* ── Precio: color del acento ── */
+.pd-price { color: ${primaryColor} !important; }
+
+/* ── Rating stars ── */
 .pd-rating-star.filled { color: ${primaryColor} !important; }
-.pd-tab.active { border-bottom-color: ${primaryColor} !important; color: ${primaryColor} !important; }
+
+/* ── Tabs activos ── */
+.pd-tab.active {
+    border-bottom-color: ${primaryColor} !important;
+    color: ${primaryColor} !important;
+}
+
+/* ── Badge en galería (destacado) ── */
+.pd-gallery-badge {
+    background: linear-gradient(135deg, ${primaryColor}, ${colorDark}) !important;
+    box-shadow: ${hexToRgba(primaryColor, 0.35)} !important;
+}
 `;
 
-    // Para tema LIGHT: el panel usa fondo blanco en vez de negro
+    // ══════════════════════════════════════════
+    // TEMA LIGHT: fondo blanco, textos oscuros, estilo moderno y limpio
+    // ══════════════════════════════════════════
     if (tema === 'light') {
         css += `
 :root {
-    --pd-bg-primary:   #ffffff;
-    --pd-bg-secondary: #f8fafc;
-    --pd-bg-tertiary:  #f1f5f9;
-    --pd-bg-glass:     rgba(0,0,0,0.02);
-    --pd-bg-glass-hover: rgba(0,0,0,0.04);
-    --pd-border-glass: rgba(0,0,0,0.08);
-    --pd-border-glow:  rgba(0,0,0,0.12);
-    --pd-text-primary:   #1e293b;
-    --pd-text-secondary: rgba(30,41,59,0.7);
-    --pd-text-muted:     rgba(30,41,59,0.45);
-    --pd-text-micro:     rgba(30,41,59,0.25);
-    --pd-shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-    --pd-shadow-md: 0 8px 32px rgba(0,0,0,0.12);
-    --pd-shadow-lg: 0 16px 64px rgba(0,0,0,0.15);
+    --pd-bg-primary:      #ffffff;
+    --pd-bg-secondary:    #f8fafc;
+    --pd-bg-tertiary:     #f1f5f9;
+    --pd-bg-glass:        rgba(0,0,0,0.02);
+    --pd-bg-glass-hover:  rgba(0,0,0,0.04);
+    --pd-bg-glass-active: rgba(0,0,0,0.06);
+    --pd-border-glass:    rgba(0,0,0,0.08);
+    --pd-border-glow:     rgba(0,0,0,0.13);
+    --pd-text-primary:    #1e293b;
+    --pd-text-secondary:  rgba(30,41,59,0.70);
+    --pd-text-muted:      rgba(30,41,59,0.45);
+    --pd-text-micro:      rgba(30,41,59,0.25);
+    --pd-shadow-sm:  0 1px 4px rgba(0,0,0,0.07);
+    --pd-shadow-md:  0 4px 20px rgba(0,0,0,0.10);
+    --pd-shadow-lg:  0 12px 48px rgba(0,0,0,0.13);
+    --pd-shadow-inner: inset 0 1px 0 rgba(255,255,255,0.8);
+    --pd-font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
-.pd-overlay { background: rgba(0,0,0,0.5) !important; }
-.pd-header  { background: ${primaryColor} !important; border-bottom: none !important; }
-.pd-close, .pd-close * { color: #fff !important; }
-.pd-breadcrumb, .pd-breadcrumb a, .pd-breadcrumb i { color: rgba(255,255,255,0.85) !important; }
-#pdProductName { color: #fff !important; }
+/* Panel con fondo blanco limpio, sin textura de ruido */
+.pd-panel {
+    background: #fff !important;
+    background-image: none !important;
+    box-shadow: -2px 0 24px rgba(0,0,0,0.12) !important;
+}
+/* Overlay más suave */
+.pd-overlay { background: rgba(0,0,0,0.45) !important; }
+/* Cuerpo del panel */
+.pd-body { background: #fff; }
+/* Cards glass → blancas con borde suave */
+.pd-glass-card {
+    background: #f8fafc !important;
+    border-color: rgba(0,0,0,0.08) !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06) !important;
+}
+/* Sección de precio */
+.pd-price-section {
+    background: #f1f5f9 !important;
+    border-color: rgba(0,0,0,0.08) !important;
+}
+/* Precio principal en color tienda */
+.pd-price { color: ${primaryColor} !important; }
+/* Control de cantidad */
+.pd-quantity-control {
+    background: #f8fafc !important;
+    border-color: rgba(0,0,0,0.10) !important;
+}
+.pd-quantity-input { color: #1e293b !important; }
+/* Scrollbar claro */
+.pd-body { scrollbar-color: #cbd5e1 transparent !important; }
+/* Tabs */
+.pd-tab:not(.active) { color: rgba(30,41,59,0.55) !important; border-bottom-color: transparent !important; }
+.pd-tab { border-bottom-width: 2px !important; }
 `;
     }
-    // Para tema DARK: mantener fondo negro pero usar color de tienda como acento
-    // (sin override adicional — las vars :root ya cambiaron el acento)
 
-    // Para tema VIBRANT: fondo oscuro-púrpura, acento = color de tienda
+    // ══════════════════════════════════════════
+    // TEMA DARK: fondo negro profundo, acento = color tienda
+    // ══════════════════════════════════════════
+    if (tema === 'dark') {
+        css += `
+:root {
+    --pd-bg-primary:   #08080c;
+    --pd-bg-secondary: #0f0f15;
+    --pd-bg-tertiary:  #16161f;
+}
+/* Panel oscuro con textura sutil */
+.pd-panel {
+    box-shadow: -2px 0 32px rgba(0,0,0,0.6) !important;
+}
+`;
+    }
+
+    // ══════════════════════════════════════════
+    // TEMA VIBRANT: fondo púrpura profundo, acento = color tienda
+    // ══════════════════════════════════════════
     if (tema === 'vibrant') {
         css += `
 :root {
-    --pd-bg-primary:   #1a0533;
-    --pd-bg-secondary: #250848;
-    --pd-bg-tertiary:  #2d1b4e;
-    --pd-border-glass: rgba(255,255,255,0.08);
-    --pd-text-secondary: rgba(255,255,255,0.7);
+    --pd-bg-primary:     #1a0533;
+    --pd-bg-secondary:   #250848;
+    --pd-bg-tertiary:    #2d1b4e;
+    --pd-border-glass:   rgba(255,255,255,0.08);
+    --pd-text-secondary: rgba(255,255,255,0.72);
 }
 `;
     }
@@ -1489,7 +1658,7 @@ function applyProductDetailTheme(primaryColor, tema) {
     style.textContent = css;
     document.head.appendChild(style);
 
-    console.log(`🎨 Product Detail panel sincronizado: tema=${tema}, color=${primaryColor}`);
+    console.log(`🎨 Product Detail rediseñado: tema=${tema}, color=${primaryColor}`);
 }
 
 // ==========================================
