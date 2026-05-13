@@ -3,7 +3,7 @@
 // Estrategia: cache-first para assets estáticos, network-first para API/HTML
 // ═══════════════════════════════════════════════════════════════════════════════
 
-const SW_VERSION   = '1.2.0';
+const SW_VERSION   = '1.3.0';
 const CACHE_NAME   = `tukomercio-v${SW_VERSION}`;
 const LOG          = (msg, ...args) => console.log(`[SW ${SW_VERSION}] ${msg}`, ...args);
 const LOG_WARN     = (msg, ...args) => console.warn(`[SW ${SW_VERSION}] ⚠️ ${msg}`, ...args);
