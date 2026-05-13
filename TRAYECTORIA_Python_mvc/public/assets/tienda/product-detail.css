@@ -196,6 +196,12 @@
     right: 0;
     width: 100%;
     max-width: 520px;
+    /* ★ v4.1 FIX CRÍTICO: el panel cerrado NO debe interceptar clicks.
+       opacity:0 es invisible pero SÍ captura eventos — pointer-events:none
+       es la única forma de que la grilla de productos sea clickeable
+       mientras el panel está inactivo (especialmente el layout "modal"
+       que queda centrado en la pantalla y bloqueaba las columnas del centro). */
+    pointer-events: none;
     /* ★ v3.6 FIX: 100dvh = altura del viewport visible REAL en móvil.
        Antes con 100% el panel era tan alto como el layout viewport
        (con URL bar colapsada), así que la URL bar del navegador móvil
@@ -218,6 +224,9 @@
     /* Sin textura — fondo limpio que respeta el tema */
     background-image: none;
 }
+
+/* ★ v4.1: restaurar pointer-events cuando el panel está activo (cualquier layout) */
+.pd-panel.active { pointer-events: auto; }
 
 /* Layout: derecha (default) */
 .pd-panel--right {
