@@ -2343,7 +2343,7 @@ function renderRelatedProducts(p) {
     related.forEach(prod => {
         html += `
             <div class="pd-related-item" onclick="openProductDetail(productos.find(p => p.id === ${prod.id}))">
-                <div class="pd-related-img"><img src="${prod.imagen_url || 'https://via.placeholder.com/150/16161f/d4af37?text=Producto'}" alt="${prod.nombre}" loading="lazy"></div>
+                <div class="pd-related-img"><img src="${prod.imagen_url || 'https://via.placeholder.com/150/f1f5f9/94a3b8?text=Producto'}" alt="${prod.nombre}" loading="lazy"></div>
                 <div class="pd-related-info">
                     <div class="pd-related-name">${truncate(prod.nombre, 30)}</div>
                     <div class="pd-related-price">${formatPrice(prod.precio)}</div>

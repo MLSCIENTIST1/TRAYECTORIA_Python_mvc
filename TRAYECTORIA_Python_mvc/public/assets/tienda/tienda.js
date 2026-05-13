@@ -2596,7 +2596,7 @@ if (ratingConfig.showViewing || ratingConfig.showSold || ratingConfig.showViews)
         <div class="product-card ${estaAgotado ? 'sold-out' : ''} ${videoHoverClass}" 
              onclick="openProductDetail(productos.find(x => x.id === ${p.id}))"
              ${videoHoverEnabled ? `data-video-url="${escapeHtml(videoUrl)}" data-video-behavior="${videoHoverBehavior}" data-video-muted="${videoHoverMuted}"` : ''}
-             style="animation-delay: ${Math.min(index * 0.05, 0.3)}s">
+             style="animation-delay: ${(index % 6) * 0.04}s">
             
             <div class="product-image" ${videoHoverEnabled ? 'onmouseenter="activateVideoHover(this)" onmouseleave="deactivateVideoHover(this)"' : ''}>
                 <img src="${p.imagen_url || 'https://via.placeholder.com/300x200?text=Sin+imagen'}" 
@@ -3667,12 +3667,33 @@ function extractVimeoId(url) {
 // ==========================================
 // PRODUCTOS
 // ==========================================
+// ★ Skeleton loading (#4): renderiza N tarjetas shimmer mientras llega la API
+function renderSkeletonGrid(n = 12) {
+    const grid = document.getElementById('productsGrid');
+    if (!grid) return;
+    const card = `
+        <div class="skeleton-card">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-info">
+                <div class="skeleton-line cat"></div>
+                <div class="skeleton-line title"></div>
+                <div class="skeleton-line desc"></div>
+                <div class="skeleton-line price"></div>
+                <div class="skeleton-line btn"></div>
+            </div>
+        </div>`;
+    grid.innerHTML = card.repeat(n);
+}
+
 async function loadProducts() {
-    if (!tiendaConfig.negocio_id) { 
-        renderProducts([]); 
-        return; 
+    if (!tiendaConfig.negocio_id) {
+        renderProducts([]);
+        return;
     }
-    
+
+    // Mostrar skeleton cards inmediatamente (UX percepción de velocidad)
+    renderSkeletonGrid(12);
+
     try {
         // ★ v3.6: pedimos hasta 2000 al backend (cap del backend),
         // y el frontend pagina localmente con scroll infinito (36 productos por chunk).
@@ -4236,21 +4257,29 @@ window.seeAllSearchResults = seeAllSearchResults;
 window.searchByCategory = searchByCategory;
 window.renderSearchOverlayResults = renderSearchOverlayResults;
 
-// Buscador
+// ★ Buscador con debounce (#7): espera 280ms tras el último keystroke
+// para no re-renderizar la grilla en cada letra
+let _searchDebounceTimer = null;
 document.getElementById('searchInput')?.addEventListener('input', function(e) {
+    clearTimeout(_searchDebounceTimer);
     const q = e.target.value.toLowerCase().trim();
-    if (!q) { 
-        renderProducts(productos); 
-        document.getElementById('productsTitle').textContent = 'Todos los productos'; 
-        return; 
+
+    if (!q) {
+        // Respuesta inmediata al borrar — sin espera
+        renderProducts(productos);
+        document.getElementById('productsTitle').textContent = 'Todos los productos';
+        return;
     }
-    const filtered = productos.filter(p => 
-        p.nombre.toLowerCase().includes(q) || 
-        (p.categoria && p.categoria.toLowerCase().includes(q)) ||
-        (p.descripcion && p.descripcion.toLowerCase().includes(q))
-    );
-    document.getElementById('productsTitle').textContent = `Resultados: "${q}"`;
-    renderProducts(filtered);
+
+    _searchDebounceTimer = setTimeout(() => {
+        const filtered = productos.filter(p =>
+            p.nombre.toLowerCase().includes(q) ||
+            (p.categoria && p.categoria.toLowerCase().includes(q)) ||
+            (p.descripcion && p.descripcion.toLowerCase().includes(q))
+        );
+        document.getElementById('productsTitle').textContent = `Resultados: "${q}"`;
+        renderProducts(filtered);
+    }, 280);
 });
 
 // ==========================================
