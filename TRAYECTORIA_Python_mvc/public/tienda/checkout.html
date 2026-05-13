@@ -130,7 +130,7 @@ Para solicitar autorización de uso: carlos-5100@hotmail.com
         }
         
         .back-link:hover {
-            color: #3b82f6;
+            color: var(--primary);
         }
         
         .store-name {
@@ -174,8 +174,8 @@ Para solicitar autorización de uso: carlos-5100@hotmail.com
         .card-header i {
             width: 40px;
             height: 40px;
-            background: #eff6ff;
-            color: #3b82f6;
+            background: var(--primary-light);
+            color: var(--primary);
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -225,13 +225,13 @@ Para solicitar autorización de uso: carlos-5100@hotmail.com
         
         .auth-option:hover,
         .auth-option.active {
-            border-color: #3b82f6;
-            background: #eff6ff;
+            border-color: var(--primary);
+            background: var(--primary-light);
         }
         
         .auth-option i {
             font-size: 1.5rem;
-            color: #3b82f6;
+            color: var(--primary);
             margin-bottom: 8px;
             display: block;
         }
@@ -302,7 +302,7 @@ Para solicitar autorización de uso: carlos-5100@hotmail.com
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #3b82f6;
+            border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
         
@@ -342,12 +342,12 @@ Para solicitar autorización de uso: carlos-5100@hotmail.com
         }
         
         .address-type:hover {
-            border-color: #3b82f6;
+            border-color: var(--primary);
         }
         
         .address-type.active {
-            border-color: #3b82f6;
-            background: #eff6ff;
+            border-color: var(--primary);
+            background: var(--primary-light);
         }
         
         .address-type .icon {
@@ -432,11 +432,11 @@ Para solicitar autorización de uso: carlos-5100@hotmail.com
         
         .payment-method:hover,
         .payment-method.active {
-            border-color: #3b82f6;
+            border-color: var(--primary);
         }
         
         .payment-method.active {
-            background: #eff6ff;
+            background: var(--primary-light);
         }
         
         .payment-method .radio {
@@ -450,14 +450,14 @@ Para solicitar autorización de uso: carlos-5100@hotmail.com
         }
         
         .payment-method.active .radio {
-            border-color: #3b82f6;
+            border-color: var(--primary);
         }
         
         .payment-method.active .radio::after {
             content: '';
             width: 10px;
             height: 10px;
-            background: #3b82f6;
+            background: var(--primary);
             border-radius: 50%;
         }
         
@@ -636,11 +636,11 @@ Para solicitar autorización de uso: carlos-5100@hotmail.com
         }
         .cupon-row input:focus {
             outline: none;
-            border-color: #3b82f6;
+            border-color: var(--primary);
         }
         .cupon-row button {
             padding: 10px 16px;
-            background: #3b82f6;
+            background: var(--primary);
             color: white;
             border: none;
             border-radius: 8px;
@@ -650,7 +650,7 @@ Para solicitar autorización de uso: carlos-5100@hotmail.com
             transition: background 0.2s;
             white-space: nowrap;
         }
-        .cupon-row button:hover { background: #2563eb; }
+        .cupon-row button:hover { background: var(--primary); }
         .cupon-row button:disabled { background: #94a3b8; cursor: not-allowed; }
         #cuponMsg {
             margin-top: 8px;
@@ -794,14 +794,14 @@ Para solicitar autorización de uso: carlos-5100@hotmail.com
                             <label>Contraseña</label>
                             <input type="password" id="loginPassword" placeholder="Tu contraseña">
                         </div>
-                        <button type="button" class="submit-btn" style="background: #3b82f6; margin-top: 0;" onclick="handleLogin()">
+                        <button type="button" class="submit-btn" style="background: var(--primary); margin-top: 0;" onclick="handleLogin()">
                             <i class="fas fa-sign-in-alt"></i>
                             Iniciar Sesión
                         </button>
                         <div class="divider"><span>o</span></div>
                         <p style="text-align: center; font-size: 0.85rem; color: #64748b;">
                             ¿No tienes cuenta? 
-                            <a href="#" onclick="selectAuthOption('guest')" style="color: #3b82f6;">Continúa como invitado</a>
+                            <a href="#" onclick="selectAuthOption('guest')" style="color: var(--primary);">Continúa como invitado</a>
                         </p>
                     </div>
                     

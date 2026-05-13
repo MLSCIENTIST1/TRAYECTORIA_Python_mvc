@@ -21,6 +21,18 @@
 
 const API_URL = 'https://trayectoria-backend.onrender.com/api';
 
+// Ajusta un color hex aclarando (+) u oscureciendo (-)
+function _shadeHex(hex, amount) {
+    try {
+        hex = (hex || '#2563eb').replace('#', '');
+        if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+        let r = Math.min(255, Math.max(0, parseInt(hex.slice(0,2), 16) + amount));
+        let g = Math.min(255, Math.max(0, parseInt(hex.slice(2,4), 16) + amount));
+        let b = Math.min(255, Math.max(0, parseInt(hex.slice(4,6), 16) + amount));
+        return '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
+    } catch { return hex || '#2563eb'; }
+}
+
 let tiendaConfig = {
     negocio_id: null,
     nombre: 'Tienda',
@@ -224,7 +236,9 @@ async function loadStoreConfig(slug) {
 
             const primaryColor = negocio.config_tienda?.styles?.primaryColor || negocio.color_tema || '#2563eb';
             document.documentElement.style.setProperty('--primary', primaryColor);
-            document.documentElement.style.setProperty('--primary-dark', primaryColor);
+            document.documentElement.style.setProperty('--primary-dark', _shadeHex(primaryColor, -30));
+            // tinte suave para fondos de elementos activos (reemplaza #eff6ff hardcodeado)
+            document.documentElement.style.setProperty('--primary-light', _shadeHex(primaryColor, 60) + '28');
 
             console.log('✅ Negocio ID cargado:', tiendaConfig.negocio_id);
             
@@ -1000,6 +1014,10 @@ async function submitOrder(metodoPagoOverride = null, wompiRef = null) {
                 cantidad: item.cantidad,
                 precio_unitario: item.precio,
                 precio_con_personalizacion: item.precio + costoAdicional,
+                // ★ v5.8: Variantes seleccionadas
+                variante_id: item.variante_id || null,
+                variante_texto: item.variante_texto || null,
+                variante_seleccionada: item.variante_seleccionada || null,
                 personalizacion: (pers && pers.activa) ? {
                     activa: true,
                     texto: pers.texto || null,
@@ -1684,9 +1702,10 @@ async function pagarConWompi() {
             return;
         }
 
-        // URL de retorno tras el pago
+        // URL de retorno tras el pago (incluye nid para que pago-exitoso pueda verificar)
         const slug = tiendaConfig.slug;
-        const redirectUrl = `${location.origin}/tienda/pago-exitoso.html?slug=${slug}`;
+        const nid  = tiendaConfig.negocio_id || '';
+        const redirectUrl = `${location.origin}/tienda/pago-exitoso.html?slug=${slug}&nid=${nid}`;
 
         // Pedir sesión al backend
         const sesRes = await fetch(`${API_URL}/negocio/${tiendaConfig.negocio_id}/wompi/session`, {
